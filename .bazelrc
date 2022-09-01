@@ -1,0 +1,7 @@
+build --color=yes
+
+build --workspace_status_command=tools/version/bzl_workspace_status_command.sh
+build --embed_label="'git describe --always --dirty'"
+
+try-import .config/user.bazelrc
+try-import .config/dev.bazelrc

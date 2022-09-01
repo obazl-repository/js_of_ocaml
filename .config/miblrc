@@ -1,0 +1,48 @@
+; mibl config
+
+[mibl]
+version = 0.1.0
+grammar=1.0.0-BETA  ;; version number of config grammar, not obazl program
+
+[srcs]
+
+;; `echo $(PWD)` always included
+;; include = test
+
+;;;; excludes override includes
+;; excluded by default:
+;; _build (dune output dir)
+;; bazel-bin, bazel-out etc. - bazel symlinks
+;; hidden files and dirs (.git/, .github/, .merlin, etc.)
+
+exclude = bzl
+
+exclude = api
+exclude = benchmarks
+exclude = compiler
+exclude = compiler/bin-js_of_ocaml
+exclude = compiler/bin-jsoo_minify
+;; exclude = compiler/lib
+exclude = compiler/lib-cmdline
+exclude = compiler/lib-findlib-support
+exclude = compiler/lib-runtime-files
+exclude = compiler/ppx
+exclude = compiler/tests-check-prim
+exclude = compiler/tests-compiler
+exclude = compiler/tests-dynlink
+exclude = compiler/tests-io
+exclude = compiler/tests-jsoo
+exclude = compiler/tests-num
+exclude = compiler/tests-ocaml
+exclude = compiler/tests-re
+exclude = examples
+exclude = lib
+exclude = manual
+exclude = ppx
+exclude = runtime
+exclude = tools
+;; exclude = tools/select
+;; exclude = tools/sourcemap
+;; exclude = tools/toplevel_expect
+;; exclude = tools/version
+exclude = toplevel
