@@ -1,0 +1,7 @@
+load(":BUILD.bzl", "git_version")
+
+git_version(
+    name = "git-version",
+    out  = "GIT-VERSION",
+    visibility = ["//visibility:public"],
+)
