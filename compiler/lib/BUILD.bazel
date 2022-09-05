@@ -1,0 +1,1011 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocamllex",
+     "ocaml_module",
+     "ocaml_signature",
+     "ppx_executable",
+)
+
+load("@obazl//build:rules_ocaml.bzl", "menhir")
+
+JS_OF_OCAML_COMPILER_DEPS = [
+        "@ocaml//compiler-libs/common",
+        "@ocaml//compiler-libs/bytecomp",
+        "@bytes//bytes",
+        "@menhirLib//menhirLib",
+        "@menhirSdk//menhirSdk"
+]
+
+JS_OF_OCAML_COMPILER_COMPILE_OPTS = [
+        "-w", "-7-37", "-safe-string"
+]
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "js_of_ocaml_compiler",
+    submodules = [
+        ":Annot_lexer",
+        ":Annot_parser",
+        ":Base64",
+        ":Build_path_prefix_map",
+        ":Builtins",
+        ":Code",
+        ":Config",
+        ":Constant",
+        ":Deadcode",
+        ":Debug",
+        ":Dgraph",
+        ":Driver",
+        ":Eval",
+        ":Findlib",
+        ":Flow",
+        ":Freevars",
+        ":Fs",
+        ":Generate",
+        ":Generate_closure",
+        ":Inline",
+        ":Instr",
+        ":Javascript",
+        ":Js_assign",
+        ":Js_lexer",
+        ":Js_output",
+        ":Js_parser",
+        ":Js_simpl",
+        ":Js_token",
+        ":Js_traverse",
+        ":Link_js",
+        ":Linker",
+        ":Macro",
+        ":Magic_number",
+        ":Mlvalue",
+        ":Ocaml_compiler",
+        ":Ocaml_version",
+        ":Parse_bytecode",
+        ":Parse_info",
+        ":Parse_js",
+        ":Phisimpl",
+        ":Pretty_print",
+        ":Primitive",
+        ":Pseudo_fs",
+        ":Pure_fun",
+        ":Reserved",
+        ":Source_map",
+        ":Source_map_io",
+        ":Specialize",
+        ":Specialize_js",
+        ":Stdlib",
+        ":Strongly_connected_components",
+        ":Subst",
+        ":Tailcall",
+        ":Target_env",
+        ":Timer",
+        ":Var_printer",
+        ":Vlq64"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Annot_lexer",
+    struct        = "annot_lexer.ml",
+    sig           = "annot_lexer.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Annot_parser"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Annot_parser",
+    struct        = "annot_parser.ml",
+    sig           = "annot_parser.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [":Primitive"],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Base64",
+    struct        = "base64.ml",
+    sig           = "base64.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Build_path_prefix_map",
+    struct        = "build_path_prefix_map.ml",
+    sig           = "build_path_prefix_map.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Builtins",
+    struct        = "builtins.ml",
+    sig           = "builtins.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Code",
+    struct        = "code.ml",
+    sig           = "code.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Debug",
+        ":Var_printer",
+        ":Parse_info",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Config",
+    struct        = "config.ml",
+    sig           = "config.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Deadcode",
+    struct        = "deadcode.ml",
+    sig           = "deadcode.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Debug",
+        ":Pure_fun",
+        ":Stdlib",
+        ":Timer",
+        ":Code"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Debug",
+    struct        = "debug.ml",
+    sig           = "debug.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Dgraph",
+    struct        = "dgraph.ml",
+    sig           = "dgraph.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Driver",
+    struct        = "driver.ml",
+    sig           = "driver.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Builtins",
+        ":Compiler_version",
+        ":Config",
+        ":Constant",
+        ":Deadcode",
+        ":Debug",
+        ":Eval",
+        ":Flow",
+        ":Generate",
+        ":Generate_closure",
+        ":Inline",
+        ":Javascript",
+        ":Js_assign",
+        ":Js_output",
+        ":Js_traverse",
+        ":Linker",
+        ":Parse_js",
+        ":Phisimpl",
+        ":Primitive",
+        ":Reserved",
+        ":Specialize",
+        ":Specialize_js",
+        ":Stdlib",
+        ":Tailcall",
+        ":Timer",
+        ":Var_printer",
+        ":Code",
+        ":Parse_bytecode",
+        ":Pretty_print",
+        ":Source_map"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Eval",
+    struct        = "eval.ml",
+    sig           = "eval.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Primitive",
+        ":Stdlib",
+        ":Code",
+        ":Flow"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Findlib",
+    struct        = "findlib.ml",
+    sig           = "findlib.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Fs",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Flow",
+    struct        = "flow.ml",
+    sig           = "flow.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Debug",
+        ":Dgraph",
+        ":Primitive",
+        ":Stdlib",
+        ":Subst",
+        ":Timer",
+        ":Code"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Freevars",
+    struct        = "freevars.ml",
+    sig           = "freevars.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Debug",
+        ":Timer",
+        ":Code",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Fs",
+    struct        = "fs.ml",
+    sig           = "fs.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Generate",
+    struct        = "generate.ml",
+    sig           = "generate.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Constant",
+        ":Debug",
+        ":Js_simpl",
+        ":Mlvalue",
+        ":Parse_info",
+        ":Parse_js",
+        ":Primitive",
+        ":Stdlib",
+        ":Subst",
+        ":Timer",
+        ":Code",
+        ":Javascript",
+        ":Parse_bytecode"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Generate_closure",
+    struct        = "generate_closure.ml",
+    sig           = "generate_closure.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Debug",
+        ":Freevars",
+        ":Stdlib",
+        ":Strongly_connected_components",
+        ":Subst",
+        ":Code"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Inline",
+    struct        = "inline.ml",
+    sig           = "inline.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Debug",
+        ":Primitive",
+        ":Stdlib",
+        ":Timer",
+        ":Code"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Instr",
+    struct        = "instr.ml",
+    sig           = "instr.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Ocaml_version",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Javascript",
+    struct        = "javascript.ml",
+    sig           = "javascript.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Reserved",
+        ":Stdlib",
+        ":Var_printer",
+        ":Code",
+        ":Js_token",
+        ":Parse_info"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_assign",
+    struct        = "js_assign.ml",
+    sig           = "js_assign.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Code",
+        ":Config",
+        ":Debug",
+        ":Js_traverse",
+        ":Reserved",
+        ":Stdlib",
+        ":Javascript"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_lexer",
+    struct        = "js_lexer.ml",
+    sig           = "js_lexer.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Js_token"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_output",
+    struct        = "js_output.ml",
+    sig           = "js_output.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Base64",
+        ":Builtins",
+        ":Code",
+        ":Config",
+        ":Debug",
+        ":Fs",
+        ":Parse_info",
+        ":Source_map_io",
+        ":Stdlib",
+        ":Javascript",
+        ":Pretty_print",
+        ":Source_map"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_parser",
+    struct        = "js_parser.ml",
+    sig           = "js_parser.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Js_token", ":Javascript",
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_simpl",
+    struct        = "js_simpl.ml",
+    sig           = "js_simpl.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Code",
+        ":Javascript"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_token",
+    struct        = "js_token.ml",
+    sig           = "js_token.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Primitive"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Js_traverse",
+    struct        = "js_traverse.ml",
+    sig           = "js_traverse.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Code",
+        ":Javascript",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Link_js",
+    struct        = "link_js.ml",
+    sig           = "link_js.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Base64",
+        ":Source_map_io",
+        ":Stdlib",
+        ":Source_map"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Linker",
+    struct        = "linker.ml",
+    sig           = "linker.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Constant",
+        ":Findlib",
+        ":Fs",
+        ":Js_traverse",
+        ":Macro",
+        ":Ocaml_version",
+        ":Parse_info",
+        ":Parse_js",
+        ":Primitive",
+        ":Reserved",
+        ":Builtins",
+        ":Javascript",
+        ":Stdlib",
+        ":Target_env"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Macro",
+    struct        = "macro.ml",
+    sig           = "macro.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Js_traverse",
+        ":Mlvalue",
+        ":Stdlib",
+        ":Javascript"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Magic_number",
+    struct        = "magic_number.ml",
+    sig           = "magic_number.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Ocaml_version",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Mlvalue",
+    struct        = "mlvalue.ml",
+    sig           = "mlvalue.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Javascript"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Ocaml_compiler",
+    struct        = "ocaml_compiler.ml",
+    sig           = "ocaml_compiler.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Code",
+        ":Primitive"
+    ],
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Ocaml_version",
+    struct        = "ocaml_version.ml",
+    sig           = "ocaml_version.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Parse_bytecode",
+    struct        = "parse_bytecode.ml",
+    sig           = "parse_bytecode.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Build_path_prefix_map",
+        ":Config",
+        ":Debug",
+        ":Fs",
+        ":Instr",
+        ":Magic_number",
+        ":Ocaml_compiler",
+        ":Ocaml_version",
+        ":Primitive",
+        ":Code",
+        ":Parse_info",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Parse_info",
+    struct        = "parse_info.ml",
+    sig           = "parse_info.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Parse_js",
+    struct        = "parse_js.ml",
+    sig           = "parse_js.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Annot_lexer",
+        ":Annot_parser",
+        ":Js_lexer",
+        ":Js_parser",
+        ":Stdlib",
+        ":Javascript",
+        ":Js_token",
+        ":Parse_info"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Phisimpl",
+    struct        = "phisimpl.ml",
+    sig           = "phisimpl.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Debug",
+        ":Dgraph",
+        ":Stdlib",
+        ":Subst",
+        ":Timer",
+        ":Code"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Pretty_print",
+    struct        = "pretty_print.ml",
+    sig           = "pretty_print.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Primitive",
+    struct        = "primitive.ml",
+    sig           = "primitive.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Pseudo_fs",
+    struct        = "pseudo_fs.ml",
+    sig           = "pseudo_fs.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Findlib",
+        ":Fs",
+        ":Code",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Pure_fun",
+    struct        = "pure_fun.ml",
+    sig           = "pure_fun.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Primitive",
+        ":Stdlib",
+        ":Code"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Reserved",
+    struct        = "reserved.ml",
+    sig           = "reserved.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Source_map",
+    struct        = "source_map.ml",
+    sig           = "source_map.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Vlq64"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Source_map_io",
+    # module = "Source_map_io",
+    struct        = "source_map_io.ml",
+    sig           = "source_map_io.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Source_map"
+    ],
+    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+# ocaml_module(
+#     name          = "Source_map_io",
+#     # module = "Source_map_io",
+#     struct        = select({
+#         "//bzl/import:yojson?": "source_map_io.yojson.ml",
+#         "//conditions:default": "source_map_io.unsupported.ml"
+#     }),
+#     sig           = "source_map_io.mli",
+#     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+#     deps          = JS_OF_OCAML_COMPILER_DEPS + [
+#         ":Source_map"
+#     ] + select({
+#         "//bzl/import:yojson?": ["@yojson//:yojson"],
+#         "//conditions:default": []
+#     }),
+#     ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+# )
+
+ocaml_module(
+    name          = "Specialize",
+    struct        = "specialize.ml",
+    sig           = "specialize.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Primitive",
+        ":Stdlib",
+        ":Code",
+        ":Flow"
+    ],
+    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Specialize_js",
+    struct        = "specialize_js.ml",
+    sig           = "specialize_js.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Config",
+        ":Primitive",
+        ":Stdlib",
+        ":Code",
+        ":Flow"
+    ],
+    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Strongly_connected_components",
+    struct        = "strongly_connected_components.ml",
+    sig           = "strongly_connected_components.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Subst",
+    struct        = "subst.ml",
+    sig           = "subst.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib",
+        ":Code"
+    ],
+    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Tailcall",
+    struct        = "tailcall.ml",
+    sig           = "tailcall.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Debug",
+        ":Stdlib",
+        ":Subst",
+        ":Timer",
+        ":Code"
+    ],
+    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Target_env",
+    struct        = "target_env.ml",
+    sig           = "target_env.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Timer",
+    struct        = "timer.ml",
+    sig           = "timer.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Var_printer",
+    struct        = "var_printer.ml",
+    sig           = "var_printer.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Reserved",
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Vlq64",
+    struct        = "vlq64.ml",
+    sig           = "vlq64.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Constant",
+    struct        = "constant.ml",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Stdlib"
+    ],
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Stdlib",
+    struct        = "stdlib.ml",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS,
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_signature(
+    name          = "Annot_lexer.cmi",
+    src           = "annot_lexer.mli",
+)
+
+ocaml_signature(
+    name          = "Js_lexer.cmi",
+    src           = "js_lexer.mli",
+)
+
+########################
+####  File Generators  ####
+
+##########
+ocamllex(
+    name  = "lex_Annot_lexer",
+    src   = "annot_lexer.mll",
+    out   = "annot_lexer.ml",
+)
+##########
+ocamllex(
+    name  = "lex_Js_lexer",
+    src   = "js_lexer.mll",
+    out   = "js_lexer.ml",
+)
+
+#######
+menhir(
+    name  = "menhir_js_parser",
+    grammars = ["js_parser.mly"],
+    outs  = ["js_parser.ml", "js_parser.mli"],
+    deps  = [":Js_token", ":Javascript", ":Parse_info"],
+    # base  = "compiler/lib/js_parser",
+    tool  = "@ocaml//bin:menhir",
+    tokens_unused = [
+        "TUnknown",
+        "TCommentLineDirective",
+        "TComment"
+    ],
+    # opts = ["--external-tokens", "Js_token"],
+    token = "Js_token",
+    flags = [
+        "--table",
+        "--explain",
+        # "--external-tokens", "Js_token"
+    ]
+)
+
+#######
+menhir(
+    name  = "menhir_annot_parser",
+    grammars = ["annot_parser.mly"],
+    deps  = [":Primitive"], ##  ":Stdlib"],
+    # base  = "compiler/lib/annot_parser",
+    outs  = ["annot_parser.ml", "annot_parser.mli"],
+    tool  = "@ocaml//bin:menhir",
+    flags = [
+        "--explain"
+    ]
+)
+
+###############
+ppx_executable(
+    name    = "JS_OF_OCAML_COMPILER.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "//compiler/ppx:Ppx_optcomp_light"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = [
+        "//compiler/ppx:Ppx_optcomp_light",
+        "@ppxlib//ppxlib"
+    ],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+########################
+####  Rule Targets  ####
+
+######
+# alias(
+#     name = "Compiler_version", # .ml",
+#     actual = "//:version.ml.in"
+# )
+
+ocaml_module(
+    name       = "Compiler_version",
+    module = "Compiler_version",
+    struct     = "//:version.ml.in",
+    visibility = ["//visibility:public"]
+)
