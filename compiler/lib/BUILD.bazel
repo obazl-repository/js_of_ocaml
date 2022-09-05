@@ -35,6 +35,7 @@ ocaml_ns_archive(
         ":Build_path_prefix_map",
         ":Builtins",
         ":Code",
+        ":Compiler_version",
         ":Config",
         ":Constant",
         ":Deadcode",
@@ -743,35 +744,36 @@ ocaml_module(
     ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
-ocaml_module(
-    name          = "Source_map_io",
-    # module = "Source_map_io",
-    struct        = "source_map_io.ml",
-    sig           = "source_map_io.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
-        ":Source_map"
-    ],
-    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
-)
-
 # ocaml_module(
 #     name          = "Source_map_io",
 #     # module = "Source_map_io",
-#     struct        = select({
-#         "//bzl/import:yojson?": "source_map_io.yojson.ml",
-#         "//conditions:default": "source_map_io.unsupported.ml"
-#     }),
+#     # struct        = "source_map_io.ml",
+#     struct        = "source_map_io.unsupported.ml",
 #     sig           = "source_map_io.mli",
 #     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
 #     deps          = JS_OF_OCAML_COMPILER_DEPS + [
 #         ":Source_map"
-#     ] + select({
-#         "//bzl/import:yojson?": ["@yojson//:yojson"],
-#         "//conditions:default": []
-#     }),
-#     ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+#     ],
+#     # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 # )
+
+ocaml_module(
+    name          = "Source_map_io",
+    module = "Source_map_io",
+    struct        = select({
+        "//bzl/import:yojson?": "source_map_io.yojson.ml",
+        "//conditions:default": "source_map_io.unsupported.ml"
+    }),
+    sig           = "source_map_io.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+        ":Source_map"
+    ] + select({
+        "//bzl/import:yojson?": ["@yojson//:yojson"],
+        "//conditions:default": []
+    }),
+    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
 
 ocaml_module(
     name          = "Specialize",
@@ -1007,5 +1009,6 @@ ocaml_module(
     name       = "Compiler_version",
     module = "Compiler_version",
     struct     = "//:version.ml.in",
+    sig = "compiler_version.mli",
     visibility = ["//visibility:public"]
 )
