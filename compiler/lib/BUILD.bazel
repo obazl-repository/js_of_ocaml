@@ -1,10 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_ns_archive",
      "ocamllex",
      "ocaml_module",
-     "ocaml_signature",
      "ppx_executable",
 )
 
@@ -14,12 +15,13 @@ JS_OF_OCAML_COMPILER_DEPS = [
         "@ocaml//compiler-libs/common",
         "@ocaml//compiler-libs/bytecomp",
         "@bytes//bytes",
-        "@menhirLib//menhirLib",
-        "@menhirSdk//menhirSdk"
+        "@menhirLib//menhirLib"
 ]
 
 JS_OF_OCAML_COMPILER_COMPILE_OPTS = [
-        "-w", "-7-37", "-safe-string"
+        "-safe-string",
+        "-w",
+        "-7-37"
 ]
 
 #############################
@@ -100,7 +102,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Annot_parser"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -108,8 +110,8 @@ ocaml_module(
     struct        = "annot_parser.ml",
     sig           = "annot_parser.mli",
     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [":Primitive"],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    deps          = JS_OF_OCAML_COMPILER_DEPS + ["Primitive"],
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -131,7 +133,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -142,7 +144,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -156,7 +158,16 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+)
+
+ocaml_module(
+    name          = "Compiler_version",
+    struct        = "compiler_version.ml",
+    sig           = "compiler_version.mli",
+    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
+    deps          = JS_OF_OCAML_COMPILER_DEPS,
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -167,7 +178,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -183,7 +194,7 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -194,7 +205,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -205,7 +216,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -245,7 +256,7 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -260,7 +271,7 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -272,7 +283,7 @@ ocaml_module(
         ":Fs",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -290,7 +301,7 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -304,7 +315,7 @@ ocaml_module(
         ":Code",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -315,7 +326,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -339,7 +350,7 @@ ocaml_module(
         ":Javascript",
         ":Parse_bytecode"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -356,7 +367,7 @@ ocaml_module(
         ":Subst",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -372,7 +383,7 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -384,7 +395,7 @@ ocaml_module(
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -400,7 +411,7 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -417,7 +428,7 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -429,7 +440,7 @@ ocaml_module(
         ":Stdlib",
         ":Js_token"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -451,7 +462,7 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -459,10 +470,8 @@ ocaml_module(
     struct        = "js_parser.ml",
     sig           = "js_parser.mli",
     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
-        ":Js_token", ":Javascript",
-    ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    deps          = JS_OF_OCAML_COMPILER_DEPS + [":Javascript", ":Parse_info"],
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -475,7 +484,7 @@ ocaml_module(
         ":Code",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -487,7 +496,7 @@ ocaml_module(
         ":Stdlib",
         ":Primitive"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -501,7 +510,7 @@ ocaml_module(
         ":Javascript",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -515,7 +524,7 @@ ocaml_module(
         ":Stdlib",
         ":Source_map"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -540,7 +549,7 @@ ocaml_module(
         ":Stdlib",
         ":Target_env"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -554,7 +563,7 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -566,7 +575,7 @@ ocaml_module(
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -578,7 +587,7 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -588,8 +597,7 @@ ocaml_module(
     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib",
-        ":Code",
-        ":Primitive"
+        ":Code"
     ],
     ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
@@ -602,7 +610,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -624,7 +632,7 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -635,7 +643,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -653,7 +661,7 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -669,7 +677,7 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -680,7 +688,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -691,7 +699,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -705,7 +713,7 @@ ocaml_module(
         ":Code",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -718,7 +726,7 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -729,7 +737,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -741,25 +749,11 @@ ocaml_module(
         ":Stdlib",
         ":Vlq64"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
-
-# ocaml_module(
-#     name          = "Source_map_io",
-#     # module = "Source_map_io",
-#     # struct        = "source_map_io.ml",
-#     struct        = "source_map_io.unsupported.ml",
-#     sig           = "source_map_io.mli",
-#     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-#     deps          = JS_OF_OCAML_COMPILER_DEPS + [
-#         ":Source_map"
-#     ],
-#     # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
-# )
 
 ocaml_module(
     name          = "Source_map_io",
-    module = "Source_map_io",
     struct        = select({
         "//bzl/import:yojson?": "source_map_io.yojson.ml",
         "//conditions:default": "source_map_io.unsupported.ml"
@@ -772,7 +766,7 @@ ocaml_module(
         "//bzl/import:yojson?": ["@yojson//:yojson"],
         "//conditions:default": []
     }),
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -787,7 +781,7 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -802,7 +796,7 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -813,7 +807,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -825,7 +819,7 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -840,7 +834,7 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    # ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -851,7 +845,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -862,7 +856,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -874,7 +868,7 @@ ocaml_module(
         ":Reserved",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -885,7 +879,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -895,7 +889,7 @@ ocaml_module(
     deps          = JS_OF_OCAML_COMPILER_DEPS + [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ocaml_module(
@@ -903,17 +897,7 @@ ocaml_module(
     struct        = "stdlib.ml",
     opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
     deps          = JS_OF_OCAML_COMPILER_DEPS,
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
-)
-
-ocaml_signature(
-    name          = "Annot_lexer.cmi",
-    src           = "annot_lexer.mli",
-)
-
-ocaml_signature(
-    name          = "Js_lexer.cmi",
-    src           = "js_lexer.mli",
+    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
 )
 
 ########################
@@ -934,37 +918,33 @@ ocamllex(
 
 #######
 menhir(
-    name  = "menhir_js_parser",
+    name     = "menhir_js_parser",
     grammars = ["js_parser.mly"],
-    outs  = ["js_parser.ml", "js_parser.mli"],
-    deps  = [":Js_token", ":Javascript", ":Parse_info"],
-    # base  = "compiler/lib/js_parser",
-    tool  = "@ocaml//bin:menhir",
+    outs     = ["js_parser.ml", "js_parser.mli"],
+    deps = [":Javascript", ":Parse_info"],
+    tool     = "@ocaml//bin:menhir",
     tokens_unused = [
         "TUnknown",
         "TCommentLineDirective",
         "TComment"
     ],
-    # opts = ["--external-tokens", "Js_token"],
-    token = "Js_token",
+    token = ":Js_token",
     flags = [
         "--table",
-        "--explain",
-        # "--external-tokens", "Js_token"
+        "--explain"
     ]
 )
 
 #######
 menhir(
-    name  = "menhir_annot_parser",
+    name     = "menhir_annot_parser",
     grammars = ["annot_parser.mly"],
-    deps  = [":Primitive"], ##  ":Stdlib"],
-    # base  = "compiler/lib/annot_parser",
-    outs  = ["annot_parser.ml", "annot_parser.mli"],
-    tool  = "@ocaml//bin:menhir",
+    outs     = ["annot_parser.ml", "annot_parser.mli"],
+    tool     = "@ocaml//bin:menhir",
     flags = [
         "--explain"
-    ]
+    ],
+    deps = [":Primitive"]
 )
 
 ###############
@@ -972,7 +952,7 @@ ppx_executable(
     name    = "JS_OF_OCAML_COMPILER.ppx",
     main    = ":Ppx_driver",
     manifest = [
-        "//compiler/ppx:Ppx_optcomp_light"
+        "//compiler/ppx:ppx_optcomp_light"
     ],
 )
 
@@ -981,10 +961,7 @@ ocaml_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = [
-        "//compiler/ppx:Ppx_optcomp_light",
-        "@ppxlib//ppxlib"
-    ],
+    deps       = ["@ppxlib//ppxlib"],
 )
 
 ########
@@ -1000,15 +977,9 @@ genrule(
 ####  Rule Targets  ####
 
 ######
-# alias(
-#     name = "Compiler_version", # .ml",
-#     actual = "//:version.ml.in"
-# )
-
-ocaml_module(
-    name       = "Compiler_version",
-    module = "Compiler_version",
-    struct     = "//:version.ml.in",
-    sig = "compiler_version.mli",
-    visibility = ["//visibility:public"]
+copy_file(
+    name = "__compiler_version.ml",
+    src  = "//:version.ml.in",
+    out  = "compiler_version.ml"
 )
+
