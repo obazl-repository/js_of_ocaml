@@ -1,0 +1,163 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_module",
+)
+
+JS_OF_OCAML_DEPS = [
+    "//compiler/lib:js_of_ocaml_compiler",
+    "//compiler/lib-cmdline:jsoo_cmdline",
+    "@cmdliner//lib/cmdliner",
+    "@ocaml//compiler-libs/common",
+    "//compiler/lib-runtime-files:js_of_ocaml_compiler_runtime_files"
+]
+JS_OF_OCAML_OPTS = ["-safe-string"]
+
+##############################
+####  Executable Targets  ####
+#############
+ocaml_binary(
+    name     = "js_of_ocaml",
+    exe      = "js_of_ocaml",
+    opts     = ["-safe-string"],
+    manifest = ["mylib"],
+    visibility = ["//visibility:public"],
+)
+
+ocaml_ns_library(
+    name = "mylib",
+    manifest = [
+        ":Build_fs",
+        ":Build_runtime",
+        ":Check_runtime",
+        ":Cmd_arg",
+        ":Compile",
+        ":Info",
+        ":Js_of_ocaml",
+        ":Link",
+        ":Print_runtime",
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Build_fs",
+    struct        = "build_fs.ml",
+    sig           = "build_fs.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Info"
+    ],
+)
+
+ocaml_module(
+    name          = "Build_runtime",
+    struct        = "build_runtime.ml",
+    sig           = "build_runtime.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Cmd_arg",
+        ":Compile",
+        ":Info"
+    ],
+)
+
+ocaml_module(
+    name          = "Cmd_arg",
+    struct        = "cmd_arg.ml",
+    sig           = "cmd_arg.mli",
+    deps          = JS_OF_OCAML_DEPS,
+)
+
+ocaml_module(
+    name          = "Compile",
+    struct        = "compile.ml",
+    sig           = "compile.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Info",
+        ":Cmd_arg"
+    ],
+)
+
+ocaml_module(
+    name          = "Info",
+    struct        = "info.ml",
+    sig           = "info.mli",
+    deps          = JS_OF_OCAML_DEPS,
+)
+
+ocaml_module(
+    name          = "Js_of_ocaml",
+    struct        = "js_of_ocaml.ml",
+    sig           = "js_of_ocaml.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Build_fs",
+        ":Build_runtime",
+        ":Check_runtime",
+        ":Compile",
+        ":Link",
+        ":Print_runtime"
+    ],
+)
+
+ocaml_module(
+    name          = "Link",
+    struct        = "link.ml",
+    sig           = "link.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Info"
+    ],
+)
+
+ocaml_module(
+    name          = "Print_runtime",
+    struct        = "print_runtime.ml",
+    sig           = "print_runtime.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Info"
+    ],
+)
+
+ocaml_module(
+    name          = "Check_runtime",
+    struct        = "check_runtime.ml",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Info"
+    ],
+)
+
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "js_of_ocaml.1"
+    ],
+    name  = "__js_of_ocaml.1__",
+    cmd   = " ".join([
+        "$(execpath js_of_ocaml.exe)",
+        "$(SRCS)",
+        "> $@"
+    ]),
+    tools = [
+        "js_of_ocaml.exe"
+    ]
+)
+################  rule  ################
+genrule(
+    outs  = [
+        "runtime.js"
+    ],
+    name  = "__runtime.js__",
+    cmd   = " ".join([
+        "$(execpath js_of_ocaml.exe)",
+        "$(SRCS)",
+        "> $@"
+    ]),
+    tools = [
+        "js_of_ocaml.exe"
+    ]
+)
+
