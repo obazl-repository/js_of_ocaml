@@ -1,0 +1,64 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
+     "ocamllex",
+     "ocaml_module",
+)
+
+JS_OF_OCAML_DERIVING_DEPS = [
+        "@bytes//lib/bytes"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_archive(
+    name     = "js_of_ocaml_deriving",
+    manifest   = [
+        ":Deriving_Json",
+        ":Deriving_Json_import",
+        ":Deriving_Json_lexer"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Deriving_Json",
+    struct        = "deriving_Json.ml",
+    sig           = "deriving_Json.mli",
+    deps          = JS_OF_OCAML_DERIVING_DEPS + [
+        ":Deriving_Json_import",
+        ":Deriving_Json_lexer"
+    ],
+)
+
+ocaml_module(
+    name          = "Deriving_Json_lexer",
+    struct        = "deriving_Json_lexer.ml",
+    sig           = "deriving_Json_lexer.mli",
+    deps          = JS_OF_OCAML_DERIVING_DEPS + [
+        ":Deriving_Json_import"
+    ],
+)
+
+ocaml_module(
+    name          = "Deriving_Json_import",
+    struct        = "deriving_Json_import.ml",
+    deps          = JS_OF_OCAML_DERIVING_DEPS,
+)
+
+########################
+####  File Generators  ####
+
+##########
+ocamllex(
+    name  = "lex_Deriving_Json_lexer",
+    src   = "deriving_Json_lexer.mll",
+    out   = "deriving_Json_lexer.ml",
+)
+

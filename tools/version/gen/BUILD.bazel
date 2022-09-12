@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_module",
+)
+
+GEN_DEPS = [
+    "@ocaml//unix"
+]
+##############################
+####  Executable Targets  ####
+#############
+ocaml_binary(
+    name     = "gen.exe",
+    exe      = "gen",
+    main     = "Gen",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Gen",
+    struct        = "gen.ml",
+    deps          = GEN_DEPS,
+)
+
+

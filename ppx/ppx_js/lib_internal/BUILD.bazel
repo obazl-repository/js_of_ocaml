@@ -1,0 +1,64 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_library",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+PPX_JS_INTERNAL_DEPS = [
+        "@ocaml//compiler-libs/common",
+        "@ppxlib//lib/ppxlib"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_library(
+    name     = "ppx_js_internal",
+    manifest   = [
+        ":Ppx_js_internal"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Ppx_js_internal",
+    struct        = "ppx_js_internal.ml",
+    sig           = "ppx_js_internal.mli",
+    deps          = PPX_JS_INTERNAL_DEPS,
+    ppx           = ":PPX_JS_INTERNAL.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "PPX_JS_INTERNAL.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "@ppxlib//lib/metaquot"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+

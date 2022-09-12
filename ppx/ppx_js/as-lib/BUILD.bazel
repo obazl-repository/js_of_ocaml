@@ -1,0 +1,85 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_library",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+PPX_JS_DEPS = [
+        "@ocaml//compiler-libs/common",
+        "@ppxlib//lib/ppxlib"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_library(
+    name     = "ppx_js",
+    manifest   = [
+        ":Ppx_js",
+        ":Ppx_js_internal"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Ppx_js",
+    struct        = "ppx_js.ml",
+    sig           = "ppx_js.mli",
+    deps          = PPX_JS_DEPS + [
+        ":Ppx_js_internal"
+    ],
+    ppx           = ":PPX_JS.ppx",
+)
+
+ocaml_module(
+    name          = "Ppx_js_internal",
+    struct        = "ppx_js_internal.ml",
+    deps          = PPX_JS_DEPS,
+    ppx           = ":PPX_JS.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "PPX_JS.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "@ppxlib//lib/metaquot"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+########################
+####  Rule Targets  ####
+
+######
+copy_file(
+    name = "__ppx_js_internal.ml",
+    src  = "//ppx/ppx_js/lib_internal:ppx_js_internal.ml",
+    out  = "ppx_js_internal.ml"
+)
+

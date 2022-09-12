@@ -1,0 +1,59 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_library",
+     "ocaml_module",
+)
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_library(
+    name     = "jsoo_runtime",
+    manifest   = [
+        ":Jsoo_runtime"
+    ],
+)
+
+ocaml_module(
+    name          = "Jsoo_runtime",
+    struct        = "jsoo_runtime.ml",
+)
+
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "js_of_ocaml_runtime_stubs.c"
+    ],
+    name  = "__js_of_ocaml_runtime_stubs.c__",
+    srcs  = [
+        "glob_STAR.ml"
+    ],
+    cmd   = " ".join([
+        "$(execpath //lib/gen_stubs:gen_stubs.exe)",
+        "$(SRCS)",
+        "> $@"
+    ]),
+    tools = [
+        "//lib/gen_stubs:gen_stubs.exe"
+    ]
+)
+
+filegroup(
+    name = "glob_STAR.ml",
+    srcs = glob(["*.ml"]),
+    visibility = ["//lib/js_of_ocaml:__pkg__"]
+)
+
+
+## cc: ((:name . jsoo_runtime) (:srcs js_of_ocaml_runtime_stubs))
+cc_library(
+    name = "jsoo_runtime.stubs",
+    srcs = ["js_of_ocaml_runtime_stubs.c"],
+)

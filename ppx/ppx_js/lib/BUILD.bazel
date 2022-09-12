@@ -1,0 +1,34 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_library",
+     "ocaml_module",
+)
+
+PPX_JS_REWRITER_DEPS = [
+        "//ppx/ppx_js/as-lib:ppx_js"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_library(
+    name     = "ppx_js_rewriter",
+    manifest   = [
+        ":Ppx_js_rewriter"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Ppx_js_rewriter",
+    struct        = "ppx_js_rewriter.ml",
+    sig           = "ppx_js_rewriter.mli",
+    deps          = PPX_JS_REWRITER_DEPS,
+)
+
+

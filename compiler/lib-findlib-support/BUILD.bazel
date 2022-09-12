@@ -1,0 +1,39 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_library",
+     "ocaml_module",
+)
+
+JSOO_FINDLIB_SUPPORT_DEPS = [
+        "//compiler/lib:js_of_ocaml_compiler",
+        "@findlib//lib/findlib"
+]
+
+JSOO_FINDLIB_SUPPORT_ARCHIVE_OPTS = [
+        "-linkall"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_library(
+    name     = "jsoo_findlib_support",
+    manifest   = [
+        ":Jsoo_findlib_support"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Jsoo_findlib_support",
+    struct        = "jsoo_findlib_support.ml",
+    sig           = "jsoo_findlib_support.mli",
+    deps          = JSOO_FINDLIB_SUPPORT_DEPS,
+)
+
+

@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_module",
+)
+
+GEN_STUBS_DEPS = [
+    "@ocaml//compiler-libs/common"
+]
+##############################
+####  Executable Targets  ####
+#############
+ocaml_binary(
+    name     = "gen_stubs.exe",
+    exe      = "gen_stubs",
+    main     = "Gen_stubs",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Gen_stubs",
+    struct        = "gen_stubs.ml",
+    deps          = GEN_STUBS_DEPS,
+)
+
+

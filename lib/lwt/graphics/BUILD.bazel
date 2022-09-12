@@ -1,0 +1,111 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+GRAPHICS_JS_DEPS = [
+        "//lib/js_of_ocaml:js_of_ocaml",
+        "//lib/lwt:js_of_ocaml_lwt",
+        "@lwt//lib/lwt",
+        "@graphics//lib/graphics"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "graphics_js",
+    ns         = "graphics_js",
+    manifest = [
+        ":Graphics_js",
+        ":Import"
+    ],
+    cc_deps    = ["graphics_js.stubs"],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Graphics_js",
+    struct        = "graphics_js.ml",
+    sig           = "graphics_js.mli",
+    deps          = GRAPHICS_JS_DEPS + [
+        ":Import"
+    ],
+    ppx           = ":GRAPHICS_JS.ppx",
+)
+
+ocaml_module(
+    name          = "Import",
+    struct        = "import.ml",
+    deps          = GRAPHICS_JS_DEPS,
+    ppx           = ":GRAPHICS_JS.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "GRAPHICS_JS.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "//ppx/ppx_js/lib:ppx_js_rewriter"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "graphics_js_stubs.c"
+    ],
+    name  = "__graphics_js_stubs.c__",
+    srcs  = [
+        "glob_STAR.ml"
+    ],
+    cmd   = " ".join([
+        "$(execpath //libgen_stubs:gen_stubs.exe)",
+        "$(SRCS)",
+        "> $@"
+    ]),
+    tools = [
+        "//libgen_stubs:gen_stubs.exe"
+    ]
+)
+
+filegroup(
+    name = "glob_STAR.ml",
+    srcs = glob(["*.ml"]),
+    visibility = ["//visibility:private"]
+)
+
+
+## cc: ((:name . graphics_js) (:srcs graphics_js_stubs))
+cc_library(
+    name = "graphics_js.stubs",
+    srcs = ["graphics_js_stubs.c"],
+)

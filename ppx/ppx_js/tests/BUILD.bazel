@@ -1,0 +1,51 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_module",
+)
+
+MAIN_DEPS = [
+    "@toplevel_expect_test//lib/toplevel_expect_test",
+    "//ppx/ppx_js/lib:ppx_js_rewriter",
+    "@stdlib//lib/stdlib"
+]
+##############################
+####  Executable Targets  ####
+#############
+ocaml_binary(
+    name     = "main.exe",
+    exe      = "main",
+    manifest = [
+        ":Main"
+    ],
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Main",
+    struct        = "main.ml",
+    deps          = MAIN_DEPS,
+)
+
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "ppx.mlt.corrected"
+    ],
+    name  = "__ppx.mlt.corrected__",
+    srcs  = [
+        "ppx.mlt"
+    ],
+    cmd   = " ".join([
+        "$(execpath main.bc)",
+        "$(SRCS)",
+    ]),
+    tools = [
+        "main.bc"
+    ]
+)
+

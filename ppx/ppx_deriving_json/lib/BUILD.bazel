@@ -1,0 +1,64 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_library",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+PPX_DERIVING_JSON_DEPS = [
+        "@ocaml//compiler-libs/common",
+        "@ppxlib//lib/ppxlib"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+##############
+ocaml_library(
+    name     = "ppx_deriving_json",
+    manifest   = [
+        ":Ppx_deriving_json"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Ppx_deriving_json",
+    struct        = "ppx_deriving_json.ml",
+    sig           = "ppx_deriving_json.mli",
+    deps          = PPX_DERIVING_JSON_DEPS,
+    ppx           = ":PPX_DERIVING_JSON.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "PPX_DERIVING_JSON.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "@ppxlib//lib/metaquot"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+

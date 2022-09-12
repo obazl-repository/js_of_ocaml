@@ -1,0 +1,60 @@
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+package(default_visibility = ["//visibility:public"])
+
+JSOO_LIB_RUNTIME_TEST_DEPS = [
+    "//compiler/lib-runtime-files:js_of_ocaml_compiler_runtime_files"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "jsoo_lib_runtime_test",
+    manifest = [
+        ":All"
+    ],
+)
+
+ocaml_module(
+    name          = "All",
+    struct        = "all.ml",
+    deps          = JSOO_LIB_RUNTIME_TEST_DEPS,
+    ppx           = ":JSOO_LIB_RUNTIME_TEST.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "JSOO_LIB_RUNTIME_TEST.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "@ppx_expect//:ppx_expect"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//:ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+

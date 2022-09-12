@@ -1,0 +1,97 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_module",
+)
+
+MAIN_DEPS = [
+    "@ppxlib//lib/ppxlib",
+    "@toplevel_expect_test//lib/toplevel_expect_test",
+    "//lib/deriving_json:js_of_ocaml_deriving",
+    "//ppx/ppx_deriving_json/lib:ppx_deriving_json"
+]
+##############################
+####  Executable Targets  ####
+#############
+ocaml_binary(
+    name     = "main.exe",
+    exe      = "main",
+    manifest = [
+        ":Main"
+    ],
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Main",
+    struct        = "main.ml",
+    deps          = MAIN_DEPS,
+)
+
+##############################
+####  Test Targets  ####
+#############
+sh_test(
+    name     = "runtest",
+    srcs     = ["diff"],
+    args     = [
+        "ppx.mlt",
+        "ppx.mlt.corrected"
+    ],
+    visibility = ["//visibility:public"],
+)
+
+#############
+sh_test(
+    name     = "runtest",
+    srcs     = ["diff"],
+    args     = [
+        "gen.mlt",
+        "gen.mlt.corrected"
+    ],
+    visibility = ["//visibility:public"],
+)
+
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "ppx.mlt.corrected"
+    ],
+    name  = "__ppx.mlt.corrected__",
+    srcs  = [
+        "//ppx/lib/deriving_json/js_of_ocaml_deriving.objs/byte:deriving_Json.cmi",
+        "//ppx/lib/deriving_json/js_of_ocaml_deriving.objs/byte:deriving_Json_lexer.cmi",
+        "ppx.mlt"
+    ],
+    cmd   = " ".join([
+        "$(execpath main.bc)",
+        "$(SRCS)",
+    ]),
+    tools = [
+        "main.bc"
+    ]
+)
+################  rule  ################
+genrule(
+    outs  = [
+        "gen.mlt.corrected"
+    ],
+    name  = "__gen.mlt.corrected__",
+    srcs  = [
+        "//ppx/lib/deriving_json/js_of_ocaml_deriving.objs/byte:deriving_Json.cmi",
+        "//ppx/lib/deriving_json/js_of_ocaml_deriving.objs/byte:deriving_Json_lexer.cmi",
+        "gen.mlt"
+    ],
+    cmd   = " ".join([
+        "$(execpath main.bc)",
+        "$(SRCS)",
+    ]),
+    tools = [
+        "main.bc"
+    ]
+)
+

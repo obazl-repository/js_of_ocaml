@@ -1,0 +1,47 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+)
+
+JSOO_CMDLINE_DEPS = [
+        "@cmdliner//lib/cmdliner",
+        "//compiler/lib:js_of_ocaml_compiler"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "jsoo_cmdline",
+    ns         = "jsoo_cmdline",
+    manifest = [
+        ":Arg",
+        ":Jsoo_cmdline"
+    ],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "Arg",
+    struct        = "arg.ml",
+    sig           = "arg.mli",
+    deps          = JSOO_CMDLINE_DEPS + [
+
+    ],
+)
+
+ocaml_module(
+    name          = "Jsoo_cmdline",
+    struct        = "jsoo_cmdline.ml",
+    deps          = JSOO_CMDLINE_DEPS + [
+        ":Arg"
+    ],
+)
+
+

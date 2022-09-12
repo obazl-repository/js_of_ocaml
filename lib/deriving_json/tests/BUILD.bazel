@@ -1,0 +1,64 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+DERIVING_EXPECT_TESTS_DEPS = [
+        "@ocaml//unix",
+        "//lib/js_of_ocaml:js_of_ocaml",
+        "//lib/deriving_json:js_of_ocaml_deriving"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "deriving_expect_tests",
+    ns         = "deriving_expect_tests",
+    manifest = [
+        ":Json_convert"
+    ],
+)
+
+ocaml_module(
+    name          = "Json_convert",
+    struct        = "json_convert.ml",
+    deps          = DERIVING_EXPECT_TESTS_DEPS,
+    ppx           = ":DERIVING_EXPECT_TESTS.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "DERIVING_EXPECT_TESTS.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "@ppx_expect//lib/ppx_expect",
+        "//ppx/ppx_deriving_json/lib:ppx_deriving_json"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+

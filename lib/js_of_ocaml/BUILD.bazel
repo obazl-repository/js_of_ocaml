@@ -1,0 +1,491 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+JS_OF_OCAML_DEPS = [
+        "@bytes//lib/bytes",
+        "//lib/runtime:jsoo_runtime"
+]
+
+
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "js_of_ocaml",
+    ns         = "js_of_ocaml",
+    manifest = [
+        ":CSS",
+        ":Dom",
+        ":Dom_events",
+        ":Dom_html",
+        ":Dom_svg",
+        ":EventSource",
+        ":File",
+        ":Firebug",
+        ":Form",
+        ":Geolocation",
+        ":Import",
+        ":IntersectionObserver",
+        ":Intl",
+        ":Js",
+        ":Js_of_ocaml",
+        ":Json",
+        ":Jstable",
+        ":Lib_version",
+        ":MutationObserver",
+        ":PerformanceObserver",
+        ":Regexp",
+        ":ResizeObserver",
+        ":Sys_js",
+        ":Typed_array",
+        ":Url",
+        ":WebGL",
+        ":WebSockets",
+        ":Worker",
+        ":XmlHttpRequest"
+    ],
+    cc_deps    = ["js_of_ocaml.stubs"],
+)
+
+#############################
+####  Singleton Targets  ####
+ocaml_module(
+    name          = "CSS",
+    struct        = "cSS.ml",
+    sig           = "cSS.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Regexp",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Dom",
+    struct        = "dom.ml",
+    sig           = "dom.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Dom_events",
+    struct        = "dom_events.ml",
+    sig           = "dom_events.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom_html",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Dom_html",
+    struct        = "dom_html.ml",
+    sig           = "dom_html.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":File",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Dom_svg",
+    struct        = "dom_svg.ml",
+    sig           = "dom_svg.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Dom_html",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "EventSource",
+    struct        = "eventSource.ml",
+    sig           = "eventSource.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "File",
+    struct        = "file.ml",
+    sig           = "file.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Js",
+        ":Typed_array"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Firebug",
+    struct        = "firebug.ml",
+    sig           = "firebug.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Form",
+    struct        = "form.ml",
+    sig           = "form.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom_html",
+        ":File",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Geolocation",
+    struct        = "geolocation.ml",
+    sig           = "geolocation.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "IntersectionObserver",
+    struct        = "intersectionObserver.ml",
+    sig           = "intersectionObserver.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Dom",
+        ":Dom_html",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Intl",
+    struct        = "intl.ml",
+    sig           = "intl.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Js",
+    struct        = "js.ml",
+    sig           = "js.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Json",
+    struct        = "json.ml",
+    sig           = "json.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Jstable",
+    struct        = "jstable.ml",
+    sig           = "jstable.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "MutationObserver",
+    struct        = "mutationObserver.ml",
+    sig           = "mutationObserver.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "PerformanceObserver",
+    struct        = "performanceObserver.ml",
+    sig           = "performanceObserver.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Regexp",
+    struct        = "regexp.ml",
+    sig           = "regexp.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "ResizeObserver",
+    struct        = "resizeObserver.ml",
+    sig           = "resizeObserver.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Dom_html",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Sys_js",
+    struct        = "sys_js.ml",
+    sig           = "sys_js.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js",
+        ":Lib_version"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Typed_array",
+    struct        = "typed_array.ml",
+    sig           = "typed_array.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Url",
+    struct        = "url.ml",
+    sig           = "url.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Dom_html",
+        ":Import",
+        ":Js",
+        ":Regexp"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "WebGL",
+    struct        = "webGL.ml",
+    sig           = "webGL.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom_html",
+        ":Js",
+        ":Typed_array"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "WebSockets",
+    struct        = "webSockets.ml",
+    sig           = "webSockets.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":Dom_html",
+        ":File",
+        ":Js",
+        ":Typed_array"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Worker",
+    struct        = "worker.ml",
+    sig           = "worker.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom_html",
+        ":Js"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "XmlHttpRequest",
+    struct        = "xmlHttpRequest.ml",
+    sig           = "xmlHttpRequest.mli",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":Import",
+        ":Dom",
+        ":File",
+        ":Form",
+        ":Js",
+        ":Typed_array"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Import",
+    struct        = "import.ml",
+    deps          = JS_OF_OCAML_DEPS,
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Js_of_ocaml",
+    struct        = "js_of_ocaml.ml",
+    deps          = JS_OF_OCAML_DEPS + [
+        ":CSS",
+        ":Dom",
+        ":Dom_events",
+        ":Dom_html",
+        ":Dom_svg",
+        ":EventSource",
+        ":File",
+        ":Firebug",
+        ":Form",
+        ":Geolocation",
+        ":IntersectionObserver",
+        ":Intl",
+        ":Js",
+        ":Json",
+        ":Jstable",
+        ":MutationObserver",
+        ":PerformanceObserver",
+        ":Regexp",
+        ":ResizeObserver",
+        ":Sys_js",
+        ":Typed_array",
+        ":Url",
+        ":WebGL",
+        ":WebSockets",
+        ":Worker",
+        ":XmlHttpRequest"
+    ],
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+ocaml_module(
+    name          = "Lib_version",
+    struct        = "lib_version.ml",
+    deps          = JS_OF_OCAML_DEPS,
+    ppx           = ":JS_OF_OCAML.ppx",
+)
+
+
+###############
+ppx_executable(
+    name    = "JS_OF_OCAML.ppx",
+    main    = ":Ppx_driver",
+    manifest = [
+        "//ppx/ppx_js/lib_internal:ppx_js_internal"
+    ],
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "js_of_ocaml_stubs.c"
+    ],
+    name  = "__js_of_ocaml_stubs.c__",
+    srcs  = [
+        "//lib/runtime:glob_STAR.ml",
+        "glob_STAR.ml"
+    ],
+    cmd   = " ".join([
+        "$(execpath //lib/gen_stubs:gen_stubs.exe)",
+        "$(SRCS)",
+        "> $@"
+    ]),
+    tools = [
+        "//lib/gen_stubs:gen_stubs.exe"
+    ]
+)
+######
+copy_file(
+    name = "__lib_version.ml",
+    src  = "//:version.ml.in",
+    out  = "lib_version.ml"
+)
+
+filegroup(
+    name = "glob_STAR.ml",
+    srcs = glob(["*.ml"]),
+    visibility = ["//visibility:private"]
+)
+
+
+## cc: ((:name . js_of_ocaml) (:srcs js_of_ocaml_stubs))
+cc_library(
+    name = "js_of_ocaml.stubs",
+    srcs = ["js_of_ocaml_stubs.c"],
+)
