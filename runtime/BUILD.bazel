@@ -4,8 +4,48 @@ package(default_visibility = ["//visibility:public"])
 filegroup(
     name = "glob_STAR.js",
     srcs = glob(["*.js"]),
-    data = glob(["*.js"]),
     visibility = ["//compiler/lib-runtime-files:__pkg__"]
 )
 
+genrule(
+    outs  = [
+        "stdlib.cma.js"
+    ],
+    name  = "__stdlib.cma.js__",
+    srcs  = [
+        "@ocaml//runtime:stdlib.cma"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "--pretty",
+        "--source-map-inline",
+        "-o",
+        "$@",
+        "$(location @ocaml//runtime:stdlib.cma)"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+
+genrule(  ## for js_of_ocaml
+    outs  = [
+        "std_exit.cmo.js"
+    ],
+    name  = "__std_exit.cmo.js__",
+    srcs  = [
+        "@ocaml//runtime:std_exit.cmo"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "--pretty",
+        "--source-map-inline",
+        "-o",
+        "$@",
+        "$(location @ocaml//runtime:std_exit.cmo)"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
 
