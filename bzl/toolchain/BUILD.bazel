@@ -1,0 +1,20 @@
+load("@rules_ocaml//toolchain:adapter.bzl", "toolchain_selector")
+
+load(":BUILD.bzl", "jsoo_toolchain_adapter")
+
+###################
+toolchain_selector(
+    name           = "local",
+    toolchain      = ":jsoo_toolchain",
+    toolchain_type = "@rules_jsoo//toolchain/type:std",
+    visibility     = ["//visibility:public"],
+)
+
+########################
+jsoo_toolchain_adapter(
+    name     = "jsoo_toolchain",
+    compiler = "//compiler/bin-js_of_ocaml:js_of_ocaml.exe",
+    runtime  = "//runtime:jsoo_runtime.js",
+    stdlib   = "//runtime:stdlib.cma.js",
+    std_exit = "//runtime:std_exit.cmo.js"
+)
