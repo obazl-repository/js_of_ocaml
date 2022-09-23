@@ -6,48 +6,53 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_module",
 )
 
-JS_OF_OCAML_DEPS = [
-    "//compiler/lib:js_of_ocaml_compiler",
+DEPS_1 = [
     "//compiler/lib-cmdline:jsoo_cmdline",
+    "//compiler/lib:js_of_ocaml_compiler",
     "@cmdliner//lib/cmdliner",
     "@ocaml//compiler-libs/common",
     "//compiler/lib-runtime-files:js_of_ocaml_compiler_runtime_files"
 ]
-JS_OF_OCAML_OPTS = ["-safe-string"]
+
+OPTS_1 = [
+        "-safe-string"
+]
 
 ##############################
 ####  Executable Targets  ####
-#############
 ocaml_binary(
-    name     = "js_of_ocaml",
-    exe      = "js_of_ocaml",
-    opts     = ["-safe-string"],
-    manifest = ["mylib"],
+    name     = "js_of_ocaml.exe",
+    main    = ":Js_of_ocaml",
+    # deps = ["__lib_js_of_ocaml__"],
+    opts = ["-warn-error", "-31"], # module linked twice
     visibility = ["//visibility:public"],
 )
 
-ocaml_ns_library(
-    name = "mylib",
-    manifest = [
-        ":Build_fs",
-        ":Build_runtime",
-        ":Check_runtime",
-        ":Cmd_arg",
-        ":Compile",
-        ":Info",
-        ":Js_of_ocaml",
-        ":Link",
-        ":Print_runtime",
-    ],
-)
+# ocaml_ns_library(
+#     name = "__lib_js_of_ocaml__",
+#     ns   = "lib_js_of_ocaml",
+#     manifest = [
+#         ":Build_fs",
+#         ":Build_runtime",
+#         ":Check_runtime",
+#         ":Cmd_arg",
+#         ":Js_compile",
+#         # ":Findlib_support",
+#         ":Info",
+#         ":Link",
+#         ":Print_runtime",
+#         ":Js_of_ocaml"
+#     ],
+#     visibility = ["//visibility:private"],
+# )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Build_fs",
     struct        = "build_fs.ml",
     sig           = "build_fs.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Info"
     ],
 )
@@ -56,9 +61,10 @@ ocaml_module(
     name          = "Build_runtime",
     struct        = "build_runtime.ml",
     sig           = "build_runtime.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Cmd_arg",
-        ":Compile",
+        ":Js_compile",
         ":Info"
     ],
 )
@@ -67,14 +73,17 @@ ocaml_module(
     name          = "Cmd_arg",
     struct        = "cmd_arg.ml",
     sig           = "cmd_arg.mli",
-    deps          = JS_OF_OCAML_DEPS,
+    opts          = OPTS_1,
+    deps          = DEPS_1,
 )
 
 ocaml_module(
-    name          = "Compile",
-    struct        = "compile.ml",
-    sig           = "compile.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    name          = "Js_compile",
+    # module = "Js_compile",
+    struct        = "js_compile.ml",
+    sig           = "js_compile.mli",
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Info",
         ":Cmd_arg"
     ],
@@ -84,18 +93,20 @@ ocaml_module(
     name          = "Info",
     struct        = "info.ml",
     sig           = "info.mli",
-    deps          = JS_OF_OCAML_DEPS,
+    opts          = OPTS_1,
+    deps          = DEPS_1,
 )
 
 ocaml_module(
     name          = "Js_of_ocaml",
     struct        = "js_of_ocaml.ml",
     sig           = "js_of_ocaml.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Build_fs",
         ":Build_runtime",
         ":Check_runtime",
-        ":Compile",
+        ":Js_compile",
         ":Link",
         ":Print_runtime"
     ],
@@ -105,7 +116,8 @@ ocaml_module(
     name          = "Link",
     struct        = "link.ml",
     sig           = "link.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Info"
     ],
 )
@@ -114,7 +126,8 @@ ocaml_module(
     name          = "Print_runtime",
     struct        = "print_runtime.ml",
     sig           = "print_runtime.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Info"
     ],
 )
@@ -122,7 +135,8 @@ ocaml_module(
 ocaml_module(
     name          = "Check_runtime",
     struct        = "check_runtime.ml",
-    deps          = JS_OF_OCAML_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Info"
     ],
 )
@@ -137,12 +151,60 @@ genrule(
     ],
     name  = "__js_of_ocaml.1__",
     cmd   = " ".join([
-        "$(execpath js_of_ocaml.exe)",
-        "$(SRCS)",
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "--help=groff",
         "> $@"
     ]),
-    tools = [
-        "js_of_ocaml.exe"
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+################  rule  ################
+genrule(
+    outs  = [
+        "js_of_ocaml-link.1"
+    ],
+    name  = "__js_of_ocaml-link.1__",
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "link",
+        "--help=groff",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+################  rule  ################
+genrule(
+    outs  = [
+        "js_of_ocaml-build-fs.1"
+    ],
+    name  = "__js_of_ocaml-build-fs.1__",
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "build-fs",
+        "--help=groff",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+################  rule  ################
+genrule(
+    outs  = [
+        "js_of_ocaml-build-runtime.1"
+    ],
+    name  = "__js_of_ocaml-build-runtime.1__",
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "build-runtime",
+        "--help=groff",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
 ################  rule  ################
@@ -152,12 +214,12 @@ genrule(
     ],
     name  = "__runtime.js__",
     cmd   = " ".join([
-        "$(execpath js_of_ocaml.exe)",
-        "$(SRCS)",
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "print-standard-runtime",
         "> $@"
     ]),
-    tools = [
-        "js_of_ocaml.exe"
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
 
