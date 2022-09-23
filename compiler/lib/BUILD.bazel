@@ -11,17 +11,17 @@ load("@rules_ocaml//build:rules.bzl",
 
 load("@obazl//build:rules_ocaml.bzl", "menhir")
 
-JS_OF_OCAML_COMPILER_DEPS = [
-        "@ocaml//compiler-libs/common",
-        "@ocaml//compiler-libs/bytecomp",
-        "@bytes//bytes",
-        "@menhirLib//menhirLib"
+DEPS_1 = [
+    "@ocaml//compiler-libs/common",
+    "@ocaml//compiler-libs/bytecomp",
+    "@bytes//lib/bytes",
+    "@menhirLib//lib/menhirLib"
 ]
 
-JS_OF_OCAML_COMPILER_COMPILE_OPTS = [
-        "-safe-string",
+OPTS_1 = [
         "-w",
-        "-7-37"
+        "-7-37",
+        "-safe-string"
 ]
 
 #############################
@@ -30,7 +30,8 @@ JS_OF_OCAML_COMPILER_COMPILE_OPTS = [
 #################
 ocaml_ns_archive(
     name       = "js_of_ocaml_compiler",
-    submodules = [
+    ns         = "js_of_ocaml_compiler",
+    manifest = [
         ":Annot_lexer",
         ":Annot_parser",
         ":Base64",
@@ -92,103 +93,102 @@ ocaml_ns_archive(
     ],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Annot_lexer",
     struct        = "annot_lexer.ml",
     sig           = "annot_lexer.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Annot_parser"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Annot_parser",
     struct        = "annot_parser.ml",
     sig           = "annot_parser.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Primitive"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Base64",
     struct        = "base64.ml",
     sig           = "base64.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Build_path_prefix_map",
     struct        = "build_path_prefix_map.ml",
     sig           = "build_path_prefix_map.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Builtins",
     struct        = "builtins.ml",
     sig           = "builtins.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Code",
     struct        = "code.ml",
     sig           = "code.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Debug",
         ":Var_printer",
         ":Parse_info",
         ":Stdlib"
     ],
-    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Compiler_version",
     struct        = "compiler_version.ml",
     sig           = "compiler_version.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS,
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Config",
     struct        = "config.ml",
     sig           = "config.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Deadcode",
     struct        = "deadcode.ml",
     sig           = "deadcode.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Debug",
         ":Pure_fun",
@@ -196,37 +196,37 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Debug",
     struct        = "debug.ml",
     sig           = "debug.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Dgraph",
     struct        = "dgraph.ml",
     sig           = "dgraph.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Driver",
     struct        = "driver.ml",
     sig           = "driver.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Builtins",
         ":Compiler_version",
         ":Config",
@@ -258,42 +258,42 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Eval",
     struct        = "eval.ml",
     sig           = "eval.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Primitive",
         ":Stdlib",
         ":Code",
         ":Flow"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Findlib",
     struct        = "findlib.ml",
     sig           = "findlib.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Fs",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Flow",
     struct        = "flow.ml",
     sig           = "flow.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Debug",
         ":Dgraph",
@@ -303,40 +303,40 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Freevars",
     struct        = "freevars.ml",
     sig           = "freevars.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Debug",
         ":Timer",
         ":Code",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Fs",
     struct        = "fs.ml",
     sig           = "fs.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Generate",
     struct        = "generate.ml",
     sig           = "generate.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Constant",
         ":Debug",
@@ -352,15 +352,15 @@ ocaml_module(
         ":Javascript",
         ":Parse_bytecode"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Generate_closure",
     struct        = "generate_closure.ml",
     sig           = "generate_closure.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Debug",
         ":Freevars",
@@ -369,15 +369,15 @@ ocaml_module(
         ":Subst",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Inline",
     struct        = "inline.ml",
     sig           = "inline.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Debug",
         ":Primitive",
@@ -385,27 +385,27 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Instr",
     struct        = "instr.ml",
     sig           = "instr.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Javascript",
     struct        = "javascript.ml",
     sig           = "javascript.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Reserved",
         ":Stdlib",
         ":Var_printer",
@@ -413,15 +413,15 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_assign",
     struct        = "js_assign.ml",
     sig           = "js_assign.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Code",
         ":Config",
         ":Debug",
@@ -430,27 +430,27 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_lexer",
     struct        = "js_lexer.ml",
     sig           = "js_lexer.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Js_token"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_output",
     struct        = "js_output.ml",
     sig           = "js_output.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Base64",
         ":Builtins",
         ":Code",
@@ -464,81 +464,81 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_parser",
     struct        = "js_parser.ml",
     sig           = "js_parser.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Parse_info",
         ":Javascript",
         ":Js_token"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_simpl",
     struct        = "js_simpl.ml",
     sig           = "js_simpl.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Code",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_token",
     struct        = "js_token.ml",
     sig           = "js_token.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Primitive"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_traverse",
     struct        = "js_traverse.ml",
     sig           = "js_traverse.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Code",
         ":Javascript",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Link_js",
     struct        = "link_js.ml",
     sig           = "link_js.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Base64",
         ":Source_map_io",
         ":Stdlib",
         ":Source_map"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Linker",
     struct        = "linker.ml",
     sig           = "linker.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Constant",
         ":Findlib",
@@ -555,76 +555,76 @@ ocaml_module(
         ":Stdlib",
         ":Target_env"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Macro",
     struct        = "macro.ml",
     sig           = "macro.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Js_traverse",
         ":Mlvalue",
         ":Stdlib",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Magic_number",
     struct        = "magic_number.ml",
     sig           = "magic_number.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Mlvalue",
     struct        = "mlvalue.ml",
     sig           = "mlvalue.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Javascript"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Ocaml_compiler",
     struct        = "ocaml_compiler.ml",
     sig           = "ocaml_compiler.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Code"
     ],
-    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Ocaml_version",
     struct        = "ocaml_version.ml",
     sig           = "ocaml_version.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Parse_bytecode",
     struct        = "parse_bytecode.ml",
     sig           = "parse_bytecode.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Build_path_prefix_map",
         ":Config",
         ":Debug",
@@ -638,26 +638,26 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Parse_info",
     struct        = "parse_info.ml",
     sig           = "parse_info.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Parse_js",
     struct        = "parse_js.ml",
     sig           = "parse_js.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Annot_lexer",
         ":Annot_parser",
         ":Js_lexer",
@@ -667,15 +667,15 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Phisimpl",
     struct        = "phisimpl.ml",
     sig           = "phisimpl.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Debug",
         ":Dgraph",
         ":Stdlib",
@@ -683,79 +683,79 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Pretty_print",
     struct        = "pretty_print.ml",
     sig           = "pretty_print.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Primitive",
     struct        = "primitive.ml",
     sig           = "primitive.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Pseudo_fs",
     struct        = "pseudo_fs.ml",
     sig           = "pseudo_fs.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Findlib",
         ":Fs",
         ":Code",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Pure_fun",
     struct        = "pure_fun.ml",
     sig           = "pure_fun.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Primitive",
         ":Stdlib",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Reserved",
     struct        = "reserved.ml",
     sig           = "reserved.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Source_map",
     struct        = "source_map.ml",
     sig           = "source_map.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Vlq64"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -765,145 +765,145 @@ ocaml_module(
         "//conditions:default": "source_map_io.unsupported.ml"
     }),
     sig           = "source_map_io.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Source_map"
     ] + select({
-        "//bzl/import:yojson?": ["@yojson//:yojson"],
+        "//bzl/import:yojson?": ["@yojson//lib/yojson"],
         "//conditions:default": []
     }),
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Specialize",
     struct        = "specialize.ml",
     sig           = "specialize.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Primitive",
         ":Stdlib",
         ":Code",
         ":Flow"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Specialize_js",
     struct        = "specialize_js.ml",
     sig           = "specialize_js.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Config",
         ":Primitive",
         ":Stdlib",
         ":Code",
         ":Flow"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Strongly_connected_components",
     struct        = "strongly_connected_components.ml",
     sig           = "strongly_connected_components.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Subst",
     struct        = "subst.ml",
     sig           = "subst.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Tailcall",
     struct        = "tailcall.ml",
     sig           = "tailcall.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Debug",
         ":Stdlib",
         ":Subst",
         ":Timer",
         ":Code"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Target_env",
     struct        = "target_env.ml",
     sig           = "target_env.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Timer",
     struct        = "timer.ml",
     sig           = "timer.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Var_printer",
     struct        = "var_printer.ml",
     sig           = "var_printer.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Reserved",
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Vlq64",
     struct        = "vlq64.ml",
     sig           = "vlq64.mli",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Constant",
     struct        = "constant.ml",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS + [
+    opts          = OPTS_1,
+    deps          = DEPS_1 +  [
         ":Stdlib"
     ],
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Stdlib",
     struct        = "stdlib.ml",
-    opts          = JS_OF_OCAML_COMPILER_COMPILE_OPTS,
-    deps          = JS_OF_OCAML_COMPILER_DEPS,
-    ## ppx           = ":JS_OF_OCAML_COMPILER.ppx",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 ########################
@@ -960,9 +960,9 @@ menhir(
 
 ###############
 ppx_executable(
-    name    = "JS_OF_OCAML_COMPILER.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
+    deps = [
         "//compiler/ppx:ppx_optcomp_light"
     ],
 )
@@ -972,7 +972,7 @@ ocaml_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//ppxlib"],
+    deps       = ["@ppxlib//lib/ppxlib"],
 )
 
 ########
