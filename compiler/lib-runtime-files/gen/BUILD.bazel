@@ -2,26 +2,27 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_ns_library",
      "ocaml_module",
 )
 
-GEN_DEPS = [
+DEPS_1 = [
     "//compiler/lib:js_of_ocaml_compiler"
 ]
+
 ##############################
 ####  Executable Targets  ####
-#############
 ocaml_binary(
     name     = "gen.exe",
-    exe      = "gen",
-    main     = "Gen",
+    main     = ":Gen",
     visibility = ["//visibility:public"],
 )
 
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Gen",
     struct        = "gen.ml",
-    deps          = GEN_DEPS,
+    deps          = DEPS_1,
 )
 
 

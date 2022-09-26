@@ -6,11 +6,9 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_module",
 )
 
-JS_OF_OCAML_DERIVING_DEPS = [
-        "@bytes//lib/bytes"
+DEPS_1 = [
+    "@bytes//lib/bytes"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -25,13 +23,12 @@ ocaml_archive(
     ],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Deriving_Json",
     struct        = "deriving_Json.ml",
     sig           = "deriving_Json.mli",
-    deps          = JS_OF_OCAML_DERIVING_DEPS + [
+    deps          = DEPS_1 + [
         ":Deriving_Json_import",
         ":Deriving_Json_lexer"
     ],
@@ -41,7 +38,7 @@ ocaml_module(
     name          = "Deriving_Json_lexer",
     struct        = "deriving_Json_lexer.ml",
     sig           = "deriving_Json_lexer.mli",
-    deps          = JS_OF_OCAML_DERIVING_DEPS + [
+    deps          = DEPS_1 + [
         ":Deriving_Json_import"
     ],
 )
@@ -49,7 +46,7 @@ ocaml_module(
 ocaml_module(
     name          = "Deriving_Json_import",
     struct        = "deriving_Json_import.ml",
-    deps          = JS_OF_OCAML_DERIVING_DEPS,
+    deps          = DEPS_1,
 )
 
 ########################

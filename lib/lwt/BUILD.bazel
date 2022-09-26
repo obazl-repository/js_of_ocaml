@@ -6,12 +6,10 @@ load("@rules_ocaml//build:rules.bzl",
      "ppx_executable",
 )
 
-JS_OF_OCAML_LWT_DEPS = [
-        "//lib/js_of_ocaml:js_of_ocaml",
-        "@lwt//lib/lwt"
+DEPS_1 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "@lwt//lib/lwt"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -31,86 +29,85 @@ ocaml_ns_archive(
     ],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Lwt_file",
     struct        = "lwt_file.ml",
     sig           = "lwt_file.mli",
-    deps          = JS_OF_OCAML_LWT_DEPS + [
+    deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Lwt_js",
     struct        = "lwt_js.ml",
     sig           = "lwt_js.mli",
-    deps          = JS_OF_OCAML_LWT_DEPS + [
+    deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Lwt_js_events",
     struct        = "lwt_js_events.ml",
     sig           = "lwt_js_events.mli",
-    deps          = JS_OF_OCAML_LWT_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Lwt_js"
     ],
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Lwt_jsonp",
     struct        = "lwt_jsonp.ml",
     sig           = "lwt_jsonp.mli",
-    deps          = JS_OF_OCAML_LWT_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Lwt_js"
     ],
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Lwt_xmlHttpRequest",
     struct        = "lwt_xmlHttpRequest.ml",
     sig           = "lwt_xmlHttpRequest.mli",
-    deps          = JS_OF_OCAML_LWT_DEPS + [
+    deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
-    deps          = JS_OF_OCAML_LWT_DEPS,
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_of_ocaml_lwt",
     struct        = "js_of_ocaml_lwt.ml",
-    deps          = JS_OF_OCAML_LWT_DEPS + [
+    deps          = DEPS_1 + [
         ":Lwt_file",
         ":Lwt_js",
         ":Lwt_js_events",
         ":Lwt_jsonp",
         ":Lwt_xmlHttpRequest"
     ],
-    ppx           = ":JS_OF_OCAML_LWT.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 
 ###############
 ppx_executable(
-    name    = "JS_OF_OCAML_LWT.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
+    deps = [
         "//ppx/ppx_js/lib:ppx_js_rewriter"
     ],
 )

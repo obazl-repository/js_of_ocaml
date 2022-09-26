@@ -1,16 +1,14 @@
+package(default_visibility = ["//visibility:public"])
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
 )
 
-package(default_visibility = ["//visibility:public"])
-
-JSOO_LIB_RUNTIME_TEST_DEPS = [
+DEPS_1 = [
     "//compiler/lib-runtime-files:js_of_ocaml_compiler_runtime_files"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -18,26 +16,33 @@ JSOO_LIB_RUNTIME_TEST_DEPS = [
 #################
 ocaml_ns_archive(
     name       = "jsoo_lib_runtime_test",
+    ns         = "jsoo_lib_runtime_test",
     manifest = [
         ":All"
     ],
 )
 
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "All",
     struct        = "all.ml",
-    deps          = JSOO_LIB_RUNTIME_TEST_DEPS,
-    ppx           = ":JSOO_LIB_RUNTIME_TEST.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+    ppx_args           = [
+        "-inline-test-lib",
+        "JSOO_LIB_RUNTIME_TEST"
+    ],
 )
 
 
 ###############
 ppx_executable(
-    name    = "JSOO_LIB_RUNTIME_TEST.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
-        "@ppx_expect//:ppx_expect"
+    deps = [
+        "@ppx_expect//lib/ppx_expect"
     ],
+    ## @ppx_inline_test//lib/ppx_inline_test
 )
 
 #############
@@ -45,7 +50,7 @@ ocaml_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//:ppxlib"],
+    deps       = ["@ppxlib//lib/ppxlib"],
 )
 
 ########

@@ -4,16 +4,15 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "cc_selection_proxy",
 )
 
-GRAPHICS_JS_DEPS = [
-        "//lib/js_of_ocaml:js_of_ocaml",
-        "//lib/lwt:js_of_ocaml_lwt",
-        "@lwt//lib/lwt",
-        "@graphics//lib/graphics"
+DEPS_1 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "//lib/lwt:js_of_ocaml_lwt",
+    "@lwt//lib/lwt",
+    "@graphics//lib/graphics"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -26,34 +25,33 @@ ocaml_ns_archive(
         ":Graphics_js",
         ":Import"
     ],
-    cc_deps    = ["graphics_js.stubs"],
+    cc_deps    = ["__libgraphics_js__"],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Graphics_js",
     struct        = "graphics_js.ml",
     sig           = "graphics_js.mli",
-    deps          = GRAPHICS_JS_DEPS + [
+    deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":GRAPHICS_JS.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
-    deps          = GRAPHICS_JS_DEPS,
-    ppx           = ":GRAPHICS_JS.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 
 ###############
 ppx_executable(
-    name    = "GRAPHICS_JS.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
+    deps = [
         "//ppx/ppx_js/lib:ppx_js_rewriter"
     ],
 )
@@ -85,14 +83,14 @@ genrule(
     ],
     name  = "__graphics_js_stubs.c__",
     srcs  = [
-        "glob_STAR.ml"
+        "//lib/lwt/graphics:glob_STAR.ml"
     ],
     cmd   = " ".join([
         "$(execpath //libgen_stubs:gen_stubs.exe)",
-        "$(SRCS)",
+        "$(locations :glob_STAR.ml)",
         "> $@"
     ]),
-    tools = [
+    exec_tools = [
         "//libgen_stubs:gen_stubs.exe"
     ]
 )
@@ -100,12 +98,28 @@ genrule(
 filegroup(
     name = "glob_STAR.ml",
     srcs = glob(["*.ml"]),
-    visibility = ["//visibility:private"]
+    visibility = ["//visibility:public"]
 )
 
 
 ## cc: ((:name . graphics_js) (:srcs graphics_js_stubs))
+################ ################
+cc_selection_proxy(
+    name = "__libgraphics_js__",
+    selection = select({
+        "@ocaml//host/target:vm?": ["dllgraphics_js.stubs.so"],
+        "@ocaml//host/target:sys?": ["graphics_js.stubs"],
+        "//conditions:default": ["graphics_js.stubs"]    })
+)
+
+cc_binary(
+    name = "dllgraphics_js.stubs.so",
+    linkshared = True,
+    srcs = ["graphics_js_stubs.c"],
+)
+
 cc_library(
     name = "graphics_js.stubs",
+    linkstatic = True,
     srcs = ["graphics_js_stubs.c"],
 )

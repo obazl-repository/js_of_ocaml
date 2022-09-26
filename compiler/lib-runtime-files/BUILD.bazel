@@ -1,53 +1,45 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
-     "ocaml_ns_archive",
+     "ocaml_library",
      "ocaml_module",
 )
 
-JS_OF_OCAML_COMPILER_RUNTIME_FILES_DEPS = [
-        "//compiler/lib:js_of_ocaml_compiler"
+DEPS_1 = [
+    "//compiler/lib:js_of_ocaml_compiler"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
 
 ##############
-ocaml_ns_archive(
+ocaml_library(
     name     = "js_of_ocaml_compiler_runtime_files",
-    submodules   = [
+    manifest   = [
         ":Files",
         ":Js_of_ocaml_compiler_runtime_files"
     ],
 )
 
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Files",
     struct        = "files.ml",
-    deps          = JS_OF_OCAML_COMPILER_RUNTIME_FILES_DEPS,
+    deps          = DEPS_1,
 )
 
 ocaml_module(
     name          = "Js_of_ocaml_compiler_runtime_files",
     struct        = "js_of_ocaml_compiler_runtime_files.ml",
-    deps          = JS_OF_OCAML_COMPILER_RUNTIME_FILES_DEPS + [
+    deps          = DEPS_1 + [
         ":Files"
     ],
 )
 
 ########################
 ####  Rule Targets  ####
-filegroup(
-    name = "glob_STAR.js",
-    srcs = ["//runtime:glob_STAR.js"],
-    data = ["//runtime:glob_STAR.js"]
-)
 
 ################  rule  ################
-## hand-coded. the gen.exe executable cannot handle the relative paths
-## created by //runtime:glob_STAR.js, so we derive absolute paths.
 genrule(
     outs  = [
         "files.ml"
@@ -56,16 +48,13 @@ genrule(
     srcs  = [
         "//runtime:glob_STAR.js"
     ],
-    cmd   = "\n".join([
-        "jss=();",
-        "for f in $(SRCS); do",
-        "    jss+=(\"`realpath $$f`\")",
-        "done;",
-        "$(execpath //compiler/lib-runtime-files/gen:gen.exe) \\",
-        "$${jss[@]} \\",
-        "> $@",
+    cmd   = " ".join([
+        "$(execpath //compiler/lib-runtime-files/gen:gen.exe)",
+        "`realpath $(locations //runtime:glob_STAR.js)`",
+        "> $@"
     ]),
     exec_tools = [
         "//compiler/lib-runtime-files/gen:gen.exe"
     ]
 )
+

@@ -4,6 +4,6 @@
 def register():
     native.new_local_repository(
     name       = "coswitch",
-    path       = ".obazl.d/opam/local",
+    path       = "/Users/gar/.local/share/obazl/opam/4.14.0",
     build_file_content = "#"
     )

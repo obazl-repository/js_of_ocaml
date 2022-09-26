@@ -5,12 +5,10 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_module",
 )
 
-JSOO_CMDLINE_DEPS = [
-        "@cmdliner//lib/cmdliner",
-        "//compiler/lib:js_of_ocaml_compiler"
+DEPS_1 = [
+    "@cmdliner//lib/cmdliner",
+    "//compiler/lib:js_of_ocaml_compiler"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -25,21 +23,18 @@ ocaml_ns_archive(
     ],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Arg",
     struct        = "arg.ml",
     sig           = "arg.mli",
-    deps          = JSOO_CMDLINE_DEPS + [
-
-    ],
+    deps          = DEPS_1,
 )
 
 ocaml_module(
     name          = "Jsoo_cmdline",
     struct        = "jsoo_cmdline.ml",
-    deps          = JSOO_CMDLINE_DEPS + [
+    deps          = DEPS_1 + [
         ":Arg"
     ],
 )

@@ -6,6 +6,7 @@ grammar=1.0.0-BETA  ;; version number of config grammar, not obazl program
 
 [srcs]
 
+
 ;; `echo $(PWD)` always included
 ;; include = test
 
@@ -19,30 +20,67 @@ exclude = bzl
 
 exclude = api
 exclude = benchmarks
-exclude = compiler
-exclude = compiler/bin-js_of_ocaml
-exclude = compiler/bin-jsoo_minify
-;; exclude = compiler/lib
-exclude = compiler/lib-cmdline
-exclude = compiler/lib-findlib-support
-exclude = compiler/lib-runtime-files
-exclude = compiler/ppx
-exclude = compiler/tests-check-prim
-exclude = compiler/tests-compiler
-exclude = compiler/tests-dynlink
-exclude = compiler/tests-io
-exclude = compiler/tests-jsoo
-exclude = compiler/tests-num
-exclude = compiler/tests-ocaml
-exclude = compiler/tests-re
-exclude = examples
-exclude = lib
-exclude = manual
-exclude = ppx
+;; these two are hand-rolled, always exclude
+
+exclude = tools/version
 exclude = runtime
-exclude = tools
+
+;; exclude = compiler
+;; exclude = compiler/bin-js_of_ocaml
+;; exclude = compiler/bin-jsoo_minify
+;; exclude = compiler/lib
+;; exclude = compiler/lib-cmdline
+;; exclude = compiler/lib-findlib-support
+;; exclude = compiler/lib-runtime-files
+;; exclude = compiler/lib-runtime-files/gen
+;; exclude = compiler/lib-runtime-files/tests
+;; exclude = compiler/ppx
+;; exclude = compiler/tests-check-prim
+
+;; exclude = compiler/tests-compiler
+;; exclude = compiler/tests-compiler/gen-rules
+;; exclude = compiler/tests-compiler/util
+
+;; exclude  = compiler/tests-dynlink
+exclude = compiler/tests-io  ;; WIP
+;; exclude = compiler/tests-jsoo
+exclude = compiler/tests-jsoo/bin  ;; WIP
+
+exclude = compiler/tests-num
+;;; exclude = compiler/tests-ocaml
+;; exclude = compiler/tests-re
+exclude = examples
+
+;; exclude = lib
+;; exclude = lib/deriving_json
+;; exclude = lib/gen_stubs
+;; exclude = lib/js_of_ocaml
+;; exclude = lib/lwt
+;; exclude = lib/runtime
+;; exclude = lib/tests
+exclude = lib/tyxml
+exclude = manual
+
+;; exclude = ppx
+;; exclude = ppx/ppx_deriving_json
+;; exclude = ppx/ppx_js
+;; exclude = ppx/ppx_js/as-lib
+;; exclude = ppx/ppx_js/bin
+;; exclude = ppx/ppx_js/lib
+;; exclude = ppx/ppx_js/lib_internal
+;; exclude = ppx/ppx_js/tests
+
+;; exclude = tools
 ;; exclude = tools/select
 ;; exclude = tools/sourcemap
 ;; exclude = tools/toplevel_expect
-;; exclude = tools/version
-exclude = toplevel
+
+;; exclude = toplevel
+;; exclude = toplevel/bin
+;; exclude = toplevel/examples
+;; exclude = toplevel/examples/eval
+exclude = toplevel/examples/lwt_toplevel
+;; exclude = toplevel/examples/server
+;; exclude = toplevel/lib
+;; exclude = toplevel/test
+

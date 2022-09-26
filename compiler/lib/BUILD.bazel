@@ -99,7 +99,7 @@ ocaml_module(
     struct        = "annot_lexer.ml",
     sig           = "annot_lexer.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Annot_parser"
     ],
     ppx           = ":ppx_1.exe",
@@ -110,7 +110,7 @@ ocaml_module(
     struct        = "annot_parser.ml",
     sig           = "annot_parser.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Primitive"
     ],
     ppx           = ":ppx_1.exe",
@@ -121,7 +121,7 @@ ocaml_module(
     struct        = "base64.ml",
     sig           = "base64.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -132,7 +132,7 @@ ocaml_module(
     struct        = "build_path_prefix_map.ml",
     sig           = "build_path_prefix_map.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -143,7 +143,7 @@ ocaml_module(
     struct        = "builtins.ml",
     sig           = "builtins.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -154,7 +154,7 @@ ocaml_module(
     struct        = "code.ml",
     sig           = "code.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Debug",
         ":Var_printer",
         ":Parse_info",
@@ -177,7 +177,7 @@ ocaml_module(
     struct        = "config.ml",
     sig           = "config.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -188,7 +188,7 @@ ocaml_module(
     struct        = "deadcode.ml",
     sig           = "deadcode.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Debug",
         ":Pure_fun",
@@ -204,7 +204,7 @@ ocaml_module(
     struct        = "debug.ml",
     sig           = "debug.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -215,7 +215,7 @@ ocaml_module(
     struct        = "dgraph.ml",
     sig           = "dgraph.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -226,7 +226,7 @@ ocaml_module(
     struct        = "driver.ml",
     sig           = "driver.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Builtins",
         ":Compiler_version",
         ":Config",
@@ -266,7 +266,7 @@ ocaml_module(
     struct        = "eval.ml",
     sig           = "eval.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Primitive",
         ":Stdlib",
@@ -281,7 +281,7 @@ ocaml_module(
     struct        = "findlib.ml",
     sig           = "findlib.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Fs",
         ":Stdlib"
     ],
@@ -293,7 +293,7 @@ ocaml_module(
     struct        = "flow.ml",
     sig           = "flow.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Debug",
         ":Dgraph",
@@ -311,7 +311,7 @@ ocaml_module(
     struct        = "freevars.ml",
     sig           = "freevars.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Debug",
         ":Timer",
         ":Code",
@@ -325,7 +325,7 @@ ocaml_module(
     struct        = "fs.ml",
     sig           = "fs.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -336,7 +336,7 @@ ocaml_module(
     struct        = "generate.ml",
     sig           = "generate.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Constant",
         ":Debug",
@@ -360,7 +360,7 @@ ocaml_module(
     struct        = "generate_closure.ml",
     sig           = "generate_closure.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Debug",
         ":Freevars",
@@ -377,7 +377,7 @@ ocaml_module(
     struct        = "inline.ml",
     sig           = "inline.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Debug",
         ":Primitive",
@@ -393,7 +393,7 @@ ocaml_module(
     struct        = "instr.ml",
     sig           = "instr.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Ocaml_version",
         ":Stdlib"
     ],
@@ -405,7 +405,7 @@ ocaml_module(
     struct        = "javascript.ml",
     sig           = "javascript.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Reserved",
         ":Stdlib",
         ":Var_printer",
@@ -421,7 +421,7 @@ ocaml_module(
     struct        = "js_assign.ml",
     sig           = "js_assign.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Code",
         ":Config",
         ":Debug",
@@ -438,7 +438,7 @@ ocaml_module(
     struct        = "js_lexer.ml",
     sig           = "js_lexer.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Js_token"
     ],
@@ -450,7 +450,7 @@ ocaml_module(
     struct        = "js_output.ml",
     sig           = "js_output.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Base64",
         ":Builtins",
         ":Code",
@@ -472,7 +472,7 @@ ocaml_module(
     struct        = "js_parser.ml",
     sig           = "js_parser.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Parse_info",
         ":Javascript",
         ":Js_token"
@@ -485,7 +485,7 @@ ocaml_module(
     struct        = "js_simpl.ml",
     sig           = "js_simpl.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Code",
         ":Javascript"
@@ -498,7 +498,7 @@ ocaml_module(
     struct        = "js_token.ml",
     sig           = "js_token.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Primitive"
     ],
@@ -510,7 +510,7 @@ ocaml_module(
     struct        = "js_traverse.ml",
     sig           = "js_traverse.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Code",
         ":Javascript",
@@ -524,7 +524,7 @@ ocaml_module(
     struct        = "link_js.ml",
     sig           = "link_js.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Base64",
         ":Source_map_io",
         ":Stdlib",
@@ -538,7 +538,7 @@ ocaml_module(
     struct        = "linker.ml",
     sig           = "linker.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Constant",
         ":Findlib",
@@ -563,7 +563,7 @@ ocaml_module(
     struct        = "macro.ml",
     sig           = "macro.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Js_traverse",
         ":Mlvalue",
         ":Stdlib",
@@ -577,7 +577,7 @@ ocaml_module(
     struct        = "magic_number.ml",
     sig           = "magic_number.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Ocaml_version",
         ":Stdlib"
     ],
@@ -589,7 +589,7 @@ ocaml_module(
     struct        = "mlvalue.ml",
     sig           = "mlvalue.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Javascript"
     ],
@@ -601,7 +601,7 @@ ocaml_module(
     struct        = "ocaml_compiler.ml",
     sig           = "ocaml_compiler.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Code"
     ],
@@ -613,7 +613,7 @@ ocaml_module(
     struct        = "ocaml_version.ml",
     sig           = "ocaml_version.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -624,7 +624,7 @@ ocaml_module(
     struct        = "parse_bytecode.ml",
     sig           = "parse_bytecode.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Build_path_prefix_map",
         ":Config",
         ":Debug",
@@ -646,7 +646,7 @@ ocaml_module(
     struct        = "parse_info.ml",
     sig           = "parse_info.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -657,7 +657,7 @@ ocaml_module(
     struct        = "parse_js.ml",
     sig           = "parse_js.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Annot_lexer",
         ":Annot_parser",
         ":Js_lexer",
@@ -675,7 +675,7 @@ ocaml_module(
     struct        = "phisimpl.ml",
     sig           = "phisimpl.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Debug",
         ":Dgraph",
         ":Stdlib",
@@ -691,7 +691,7 @@ ocaml_module(
     struct        = "pretty_print.ml",
     sig           = "pretty_print.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -702,7 +702,7 @@ ocaml_module(
     struct        = "primitive.ml",
     sig           = "primitive.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -713,7 +713,7 @@ ocaml_module(
     struct        = "pseudo_fs.ml",
     sig           = "pseudo_fs.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Findlib",
         ":Fs",
         ":Code",
@@ -727,7 +727,7 @@ ocaml_module(
     struct        = "pure_fun.ml",
     sig           = "pure_fun.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Primitive",
         ":Stdlib",
         ":Code"
@@ -740,7 +740,7 @@ ocaml_module(
     struct        = "reserved.ml",
     sig           = "reserved.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -751,7 +751,7 @@ ocaml_module(
     struct        = "source_map.ml",
     sig           = "source_map.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Vlq64"
     ],
@@ -766,12 +766,12 @@ ocaml_module(
     }),
     sig           = "source_map_io.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Source_map"
-    ] + select({
+    ] +  select({
         "//bzl/import:yojson?": ["@yojson//lib/yojson"],
         "//conditions:default": []
-    }),
+    }),  ## 
     ppx           = ":ppx_1.exe",
 )
 
@@ -780,7 +780,7 @@ ocaml_module(
     struct        = "specialize.ml",
     sig           = "specialize.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Primitive",
         ":Stdlib",
@@ -795,7 +795,7 @@ ocaml_module(
     struct        = "specialize_js.ml",
     sig           = "specialize_js.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Config",
         ":Primitive",
         ":Stdlib",
@@ -810,7 +810,7 @@ ocaml_module(
     struct        = "strongly_connected_components.ml",
     sig           = "strongly_connected_components.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -821,7 +821,7 @@ ocaml_module(
     struct        = "subst.ml",
     sig           = "subst.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib",
         ":Code"
     ],
@@ -833,7 +833,7 @@ ocaml_module(
     struct        = "tailcall.ml",
     sig           = "tailcall.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Debug",
         ":Stdlib",
         ":Subst",
@@ -848,7 +848,7 @@ ocaml_module(
     struct        = "target_env.ml",
     sig           = "target_env.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -859,7 +859,7 @@ ocaml_module(
     struct        = "timer.ml",
     sig           = "timer.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -870,7 +870,7 @@ ocaml_module(
     struct        = "var_printer.ml",
     sig           = "var_printer.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Reserved",
         ":Stdlib"
     ],
@@ -882,7 +882,7 @@ ocaml_module(
     struct        = "vlq64.ml",
     sig           = "vlq64.mli",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",
@@ -892,7 +892,7 @@ ocaml_module(
     name          = "Constant",
     struct        = "constant.ml",
     opts          = OPTS_1,
-    deps          = DEPS_1 +  [
+    deps          = DEPS_1 + [
         ":Stdlib"
     ],
     ppx           = ":ppx_1.exe",

@@ -5,19 +5,17 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_module",
 )
 
-PPX_OPTCOMP_LIGHT_DEPS = [
-        "@ocaml//compiler-libs/common",
-        "@ppxlib//lib/ppxlib"
+DEPS_1 = [
+    "@ocaml//compiler-libs/common",
+    "@ppxlib//lib/ppxlib"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
 
 #################
 ocaml_ns_archive(
-    name       = "ppx_optcomp_light_lib",
+    name       = "ppx_optcomp_light",
     ns         = "ppx_optcomp_light",
     manifest = [
         ":Ppx_optcomp_light",
@@ -25,10 +23,11 @@ ocaml_ns_archive(
     ],
 )
 
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Ppx_optcomp_light",
     struct        = "ppx_optcomp_light.ml",
-    deps          = PPX_OPTCOMP_LIGHT_DEPS + [
+    deps          = DEPS_1 + [
         ":Properties"
     ],
 )
@@ -36,7 +35,7 @@ ocaml_module(
 ocaml_module(
     name          = "Properties",
     struct        = "properties.ml",
-    deps          = PPX_OPTCOMP_LIGHT_DEPS,
+    deps          = DEPS_1,
 )
 
 

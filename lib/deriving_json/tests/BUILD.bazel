@@ -6,13 +6,11 @@ load("@rules_ocaml//build:rules.bzl",
      "ppx_executable",
 )
 
-DERIVING_EXPECT_TESTS_DEPS = [
-        "@ocaml//unix",
-        "//lib/js_of_ocaml:js_of_ocaml",
-        "//lib/deriving_json:js_of_ocaml_deriving"
+DEPS_1 = [
+    "@ocaml//unix",
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "//lib/deriving_json:js_of_ocaml_deriving"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -26,22 +24,28 @@ ocaml_ns_archive(
     ],
 )
 
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Json_convert",
     struct        = "json_convert.ml",
-    deps          = DERIVING_EXPECT_TESTS_DEPS,
-    ppx           = ":DERIVING_EXPECT_TESTS.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+    ppx_args           = [
+        "-inline-test-lib",
+        "DERIVING_EXPECT_TESTS"
+    ],
 )
 
 
 ###############
 ppx_executable(
-    name    = "DERIVING_EXPECT_TESTS.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
+    deps = [
         "@ppx_expect//lib/ppx_expect",
         "//ppx/ppx_deriving_json/lib:ppx_deriving_json"
     ],
+    ## @ppx_inline_test//lib/ppx_inline_test
 )
 
 #############

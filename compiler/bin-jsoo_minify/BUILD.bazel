@@ -2,47 +2,70 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_ns_library",
      "ocaml_module",
 )
 
-JSOO_MINIFY_DEPS = [
+DEPS_1 = [
     "//compiler/lib-cmdline:jsoo_cmdline",
     "//compiler/lib:js_of_ocaml_compiler",
     "@cmdliner//lib/cmdliner",
     "@ocaml//compiler-libs/common"
 ]
-JSOO_MINIFY_OPTS = ["-safe-string"]
+
+OPTS_1 = [
+        "-safe-string"
+]
 
 ##############################
 ####  Executable Targets  ####
-#############
 ocaml_binary(
     name     = "jsoo_minify.exe",
-    exe      = "jsoo_minify",
-    opts     = ["-safe-string"],
-    main     = "Jsoo_minify",
-    manifest = [
-        ":Cmd_arg"
-    ],
+    main     = ":Jsoo_minify",
     visibility = ["//visibility:public"],
 )
 
-#############################
-####  Singleton Targets  ####
+ocaml_ns_library(
+    name = "Jsoo_minify_execlib",
+    manifest = [
+        ":Cmd_arg"
+    ],
+    visibility = ["//visibility:private"],
+)
+
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Cmd_arg",
     struct        = "cmd_arg.ml",
     sig           = "cmd_arg.mli",
-    deps          = JSOO_MINIFY_DEPS,
+    opts          = OPTS_1,
+    deps          = DEPS_1,
 )
 
 ocaml_module(
     name          = "Jsoo_minify",
     struct        = "jsoo_minify.ml",
     sig           = "jsoo_minify.mli",
-    deps          = JSOO_MINIFY_DEPS + [
-        ":Cmd_arg"
-    ],
+    opts          = ["-open", "Jsoo_minify_execlib"] + OPTS_1,
+    deps          = [":Jsoo_minify_execlib"],
 )
 
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "jsoo_minify.1"
+    ],
+    name  = "__jsoo_minify.1__",
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-jsoo_minify:jsoo_minify.exe)",
+        "--help=groff",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-jsoo_minify:jsoo_minify.exe"
+    ]
+)
 

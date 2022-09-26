@@ -6,14 +6,13 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "cc_selection_proxy",
 )
 
-JS_OF_OCAML_DEPS = [
-        "@bytes//lib/bytes",
-        "//lib/runtime:jsoo_runtime"
+DEPS_1 = [
+    "@bytes//lib/bytes",
+    "//lib/runtime:jsoo_runtime"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -53,289 +52,288 @@ ocaml_ns_archive(
         ":Worker",
         ":XmlHttpRequest"
     ],
-    cc_deps    = ["js_of_ocaml.stubs"],
+    cc_deps    = ["__libjs_of_ocaml__"],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "CSS",
     struct        = "cSS.ml",
     sig           = "cSS.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Regexp",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Dom",
     struct        = "dom.ml",
     sig           = "dom.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Dom_events",
     struct        = "dom_events.ml",
     sig           = "dom_events.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom_html",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Dom_html",
     struct        = "dom_html.ml",
     sig           = "dom_html.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":File",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Dom_svg",
     struct        = "dom_svg.ml",
     sig           = "dom_svg.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Dom_html",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "EventSource",
     struct        = "eventSource.ml",
     sig           = "eventSource.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "File",
     struct        = "file.ml",
     sig           = "file.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Js",
         ":Typed_array"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Firebug",
     struct        = "firebug.ml",
     sig           = "firebug.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Form",
     struct        = "form.ml",
     sig           = "form.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom_html",
         ":File",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Geolocation",
     struct        = "geolocation.ml",
     sig           = "geolocation.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "IntersectionObserver",
     struct        = "intersectionObserver.ml",
     sig           = "intersectionObserver.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Dom",
         ":Dom_html",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Intl",
     struct        = "intl.ml",
     sig           = "intl.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js",
     struct        = "js.ml",
     sig           = "js.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Json",
     struct        = "json.ml",
     sig           = "json.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Jstable",
     struct        = "jstable.ml",
     sig           = "jstable.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "MutationObserver",
     struct        = "mutationObserver.ml",
     sig           = "mutationObserver.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "PerformanceObserver",
     struct        = "performanceObserver.ml",
     sig           = "performanceObserver.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Regexp",
     struct        = "regexp.ml",
     sig           = "regexp.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "ResizeObserver",
     struct        = "resizeObserver.ml",
     sig           = "resizeObserver.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Dom_html",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Sys_js",
     struct        = "sys_js.ml",
     sig           = "sys_js.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js",
         ":Lib_version"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Typed_array",
     struct        = "typed_array.ml",
     sig           = "typed_array.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Url",
     struct        = "url.ml",
     sig           = "url.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Dom_html",
         ":Import",
         ":Js",
         ":Regexp"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "WebGL",
     struct        = "webGL.ml",
     sig           = "webGL.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom_html",
         ":Js",
         ":Typed_array"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "WebSockets",
     struct        = "webSockets.ml",
     sig           = "webSockets.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":Dom_html",
@@ -343,26 +341,26 @@ ocaml_module(
         ":Js",
         ":Typed_array"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Worker",
     struct        = "worker.ml",
     sig           = "worker.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom_html",
         ":Js"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "XmlHttpRequest",
     struct        = "xmlHttpRequest.ml",
     sig           = "xmlHttpRequest.mli",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":Import",
         ":Dom",
         ":File",
@@ -370,20 +368,20 @@ ocaml_module(
         ":Js",
         ":Typed_array"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
-    deps          = JS_OF_OCAML_DEPS,
-    ppx           = ":JS_OF_OCAML.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Js_of_ocaml",
     struct        = "js_of_ocaml.ml",
-    deps          = JS_OF_OCAML_DEPS + [
+    deps          = DEPS_1 + [
         ":CSS",
         ":Dom",
         ":Dom_events",
@@ -411,22 +409,22 @@ ocaml_module(
         ":Worker",
         ":XmlHttpRequest"
     ],
-    ppx           = ":JS_OF_OCAML.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Lib_version",
     struct        = "lib_version.ml",
-    deps          = JS_OF_OCAML_DEPS,
-    ppx           = ":JS_OF_OCAML.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 
 ###############
 ppx_executable(
-    name    = "JS_OF_OCAML.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
+    deps = [
         "//ppx/ppx_js/lib_internal:ppx_js_internal"
     ],
 )
@@ -458,15 +456,17 @@ genrule(
     ],
     name  = "__js_of_ocaml_stubs.c__",
     srcs  = [
-        "//lib/runtime:glob_STAR.ml",
-        "glob_STAR.ml"
+        ":glob_STAR.ml",
+        "//lib/runtime:glob_STAR.ml"
     ],
     cmd   = " ".join([
         "$(execpath //lib/gen_stubs:gen_stubs.exe)",
-        "$(SRCS)",
+        "`realpath $(locations :glob_STAR.ml)`",
+        "--except",
+        "`realpath $(locations //lib/runtime:glob_STAR.ml)`",
         "> $@"
     ]),
-    tools = [
+    exec_tools = [
         "//lib/gen_stubs:gen_stubs.exe"
     ]
 )
@@ -480,12 +480,28 @@ copy_file(
 filegroup(
     name = "glob_STAR.ml",
     srcs = glob(["*.ml"]),
-    visibility = ["//visibility:private"]
+    visibility = ["//visibility:public"]
 )
 
 
 ## cc: ((:name . js_of_ocaml) (:srcs js_of_ocaml_stubs))
+################ ################
+cc_selection_proxy(
+    name = "__libjs_of_ocaml__",
+    selection = select({
+        "@ocaml//host/target:vm?": ["dlljs_of_ocaml.stubs.so"],
+        "@ocaml//host/target:sys?": ["js_of_ocaml.stubs"],
+        "//conditions:default": ["js_of_ocaml.stubs"]    })
+)
+
+cc_binary(
+    name = "dlljs_of_ocaml.stubs.so",
+    linkshared = True,
+    srcs = ["js_of_ocaml_stubs.c"],
+)
+
 cc_library(
     name = "js_of_ocaml.stubs",
+    linkstatic = True,
     srcs = ["js_of_ocaml_stubs.c"],
 )

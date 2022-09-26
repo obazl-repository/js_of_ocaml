@@ -3,9 +3,8 @@ package(default_visibility = ["//visibility:public"])
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_library",
      "ocaml_module",
+     "cc_selection_proxy",
 )
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -16,8 +15,10 @@ ocaml_library(
     manifest   = [
         ":Jsoo_runtime"
     ],
+    cc_deps    = ["__libjsoo_runtime__"],
 )
 
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Jsoo_runtime",
     struct        = "jsoo_runtime.ml",
@@ -33,14 +34,14 @@ genrule(
     ],
     name  = "__js_of_ocaml_runtime_stubs.c__",
     srcs  = [
-        "glob_STAR.ml"
+        "//lib/runtime:glob_STAR.ml"
     ],
     cmd   = " ".join([
         "$(execpath //lib/gen_stubs:gen_stubs.exe)",
-        "$(SRCS)",
+        "$(locations :glob_STAR.ml)",
         "> $@"
     ]),
-    tools = [
+    exec_tools = [
         "//lib/gen_stubs:gen_stubs.exe"
     ]
 )
@@ -53,7 +54,23 @@ filegroup(
 
 
 ## cc: ((:name . jsoo_runtime) (:srcs js_of_ocaml_runtime_stubs))
+################ ################
+cc_selection_proxy(
+    name = "__libjsoo_runtime__",
+    selection = select({
+        "@ocaml//host/target:vm?": ["dlljsoo_runtime.stubs.so"],
+        "@ocaml//host/target:sys?": ["jsoo_runtime.stubs"],
+        "//conditions:default": ["jsoo_runtime.stubs"]    })
+)
+
+cc_binary(
+    name = "dlljsoo_runtime.stubs.so",
+    linkshared = True,
+    srcs = ["js_of_ocaml_runtime_stubs.c"],
+)
+
 cc_library(
     name = "jsoo_runtime.stubs",
+    linkstatic = True,
     srcs = ["js_of_ocaml_runtime_stubs.c"],
 )

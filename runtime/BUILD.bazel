@@ -1,10 +1,34 @@
 package(default_visibility = ["//visibility:public"])
 
-
+## needed by the compiler (only; why not put them there?)
 filegroup(
     name = "glob_STAR.js",
     srcs = glob(["*.js"]),
     visibility = ["//compiler/lib-runtime-files:__pkg__"]
+)
+
+## WARNING: We cannot use jsoo_library to produce these three libs
+## (runtime, stdlib, std_exit) on pain of circularity: the jsoo
+## toolchain provides them to rules_jsoo rules.
+
+genrule(
+    outs  = [
+        "jsoo_runtime.js"
+    ],
+    name  = "__test.bc.runtime.js__",
+    srcs  = [
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "build-runtime",
+        "--pretty",
+        "--source-map-inline",
+        "-o",
+        "$@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
 )
 
 genrule(
@@ -28,13 +52,13 @@ genrule(
     ]
 )
 
-genrule(  ## for js_of_ocaml
+genrule(
     outs  = [
         "std_exit.cmo.js"
     ],
     name  = "__std_exit.cmo.js__",
     srcs  = [
-        "@ocaml//runtime:std_exit.cmo"
+        "@ocaml//runtime:std_exit_cmo"
     ],
     cmd   = " ".join([
         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
@@ -42,7 +66,7 @@ genrule(  ## for js_of_ocaml
         "--source-map-inline",
         "-o",
         "$@",
-        "$(location @ocaml//runtime:std_exit.cmo)"
+        "$(location @ocaml//runtime:std_exit_cmo)"
     ]),
     exec_tools = [
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"

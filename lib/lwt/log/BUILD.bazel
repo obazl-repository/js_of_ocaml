@@ -6,13 +6,11 @@ load("@rules_ocaml//build:rules.bzl",
      "ppx_executable",
 )
 
-LWT_LOG_JS_DEPS = [
-        "//lib/js_of_ocaml:js_of_ocaml",
-        "@lwt//lib/lwt",
-        "@lwt_log//lib/core"
+DEPS_1 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "@lwt//lib/lwt",
+    "@lwt_log//lib/core"
 ]
-
-
 
 #############################
 ####  Aggregate Targets  ####
@@ -27,31 +25,30 @@ ocaml_ns_archive(
     ],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Lwt_log_js",
     struct        = "lwt_log_js.ml",
     sig           = "lwt_log_js.mli",
-    deps          = LWT_LOG_JS_DEPS + [
+    deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":LWT_LOG_JS.ppx",
+    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
-    deps          = LWT_LOG_JS_DEPS,
-    ppx           = ":LWT_LOG_JS.ppx",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
 )
 
 
 ###############
 ppx_executable(
-    name    = "LWT_LOG_JS.ppx",
+    name    = "ppx_1.exe",
     main    = ":Ppx_driver",
-    manifest = [
+    deps = [
         "//ppx/ppx_js/lib:ppx_js_rewriter"
     ],
 )

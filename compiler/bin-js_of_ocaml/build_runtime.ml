@@ -17,8 +17,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *)
 
-module Compile = Js_compile
-
 open! Js_of_ocaml_compiler.Stdlib
 
 let info =

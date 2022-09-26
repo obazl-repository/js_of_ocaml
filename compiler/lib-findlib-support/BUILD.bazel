@@ -5,16 +5,14 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_module",
 )
 
-JSOO_FINDLIB_SUPPORT_DEPS = [
-        "//compiler/lib:js_of_ocaml_compiler",
-        "@findlib//lib/findlib"
-]
-
 JSOO_FINDLIB_SUPPORT_ARCHIVE_OPTS = [
         "-linkall"
 ]
 
-
+DEPS_1 = [
+    "//compiler/lib:js_of_ocaml_compiler",
+    "@findlib//lib/findlib"
+]
 
 #############################
 ####  Aggregate Targets  ####
@@ -27,13 +25,12 @@ ocaml_library(
     ],
 )
 
-#############################
-####  Singleton Targets  ####
+######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Jsoo_findlib_support",
     struct        = "jsoo_findlib_support.ml",
     sig           = "jsoo_findlib_support.mli",
-    deps          = JSOO_FINDLIB_SUPPORT_DEPS,
+    deps          = DEPS_1,
 )
 
 
