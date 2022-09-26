@@ -88,7 +88,6 @@ ocaml_module(
         ":Dom_html",
         ":Js"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -151,7 +150,6 @@ ocaml_module(
         ":Dom",
         ":Js"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -289,7 +287,6 @@ ocaml_module(
         ":Js",
         ":Lib_version"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -368,14 +365,12 @@ ocaml_module(
         ":Js",
         ":Typed_array"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -409,14 +404,12 @@ ocaml_module(
         ":Worker",
         ":XmlHttpRequest"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
     name          = "Lib_version",
     struct        = "lib_version.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
 )
 
 

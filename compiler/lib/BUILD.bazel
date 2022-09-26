@@ -102,7 +102,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Annot_parser"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -113,7 +112,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Primitive"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -135,7 +133,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -146,7 +143,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -160,7 +156,6 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -169,7 +164,6 @@ ocaml_module(
     sig           = "compiler_version.mli",
     opts          = OPTS_1,
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -180,7 +174,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -196,7 +189,6 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -207,7 +199,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -218,7 +209,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -258,7 +248,6 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -273,7 +262,6 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -285,7 +273,6 @@ ocaml_module(
         ":Fs",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -303,7 +290,6 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -317,7 +303,6 @@ ocaml_module(
         ":Code",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -328,7 +313,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -352,7 +336,6 @@ ocaml_module(
         ":Javascript",
         ":Parse_bytecode"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -369,7 +352,6 @@ ocaml_module(
         ":Subst",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -385,7 +367,6 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -397,7 +378,6 @@ ocaml_module(
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -413,7 +393,6 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -430,7 +409,6 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -442,7 +420,6 @@ ocaml_module(
         ":Stdlib",
         ":Js_token"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -464,7 +441,6 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -477,7 +453,6 @@ ocaml_module(
         ":Javascript",
         ":Js_token"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -490,7 +465,6 @@ ocaml_module(
         ":Code",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -502,7 +476,6 @@ ocaml_module(
         ":Stdlib",
         ":Primitive"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -516,7 +489,6 @@ ocaml_module(
         ":Javascript",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -530,7 +502,6 @@ ocaml_module(
         ":Stdlib",
         ":Source_map"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -555,7 +526,6 @@ ocaml_module(
         ":Stdlib",
         ":Target_env"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -569,7 +539,6 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -581,7 +550,6 @@ ocaml_module(
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -593,7 +561,6 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -616,7 +583,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -638,7 +604,6 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -649,7 +614,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -667,7 +631,6 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -683,7 +646,6 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -694,7 +656,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -705,7 +666,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -719,7 +679,6 @@ ocaml_module(
         ":Code",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -732,7 +691,6 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -743,7 +701,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -755,7 +712,6 @@ ocaml_module(
         ":Stdlib",
         ":Vlq64"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -772,7 +728,6 @@ ocaml_module(
         "//bzl/import:yojson?": ["@yojson//lib/yojson"],
         "//conditions:default": []
     }),  ## 
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -787,7 +742,6 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -802,7 +756,6 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -813,7 +766,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -825,7 +777,6 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -840,7 +791,6 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -851,7 +801,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -862,7 +811,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -874,7 +822,6 @@ ocaml_module(
         ":Reserved",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -885,7 +832,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -895,7 +841,6 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
 )
 
 ocaml_module(
@@ -903,7 +848,6 @@ ocaml_module(
     struct        = "stdlib.ml",
     opts          = OPTS_1,
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
 )
 
 ########################
