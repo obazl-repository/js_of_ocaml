@@ -1,5 +1,10 @@
 # Js_of_ocaml (jsoo)
 
+This fork demonstrates use of [OBazl](https://obazl.github.io/docs_obazl/) to build Js_of_ocaml.
+
+See [bzl/docs](bzl/docs/obazl.adoc) for more information.
+
+
 [![Build Status](https://github.com/ocsigen/js_of_ocaml/workflows/build/badge.svg?branch=master)](https://github.com/ocsigen/js_of_ocaml/actions)
 
 Js_of_ocaml is a compiler from OCaml bytecode to JavaScript. It makes it

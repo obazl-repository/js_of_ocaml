@@ -1,0 +1,143 @@
+= Js_of_ocaml - OBazl version
+
+This is an OBazl demonstration project.  It demonstrates:
+
+* Use of link:https://github.com/obazl/tools_obazl[tools_obazl] (`@obazl//convert`) to automatically convert from Dune to OBazel
+* Use of link:https://github.com/obazl/rules_ocaml[rules_ocaml] to build Js_of_ocaml
+* Use of link:https://github.com/obazl/rules_jsoo[rules_jsoo] to integrate Js_of_ocaml with related Javascript rulesets such as
+** link:https://github.com/aspect-build/rules_js[rules_js] using node toolchains
+** link:https://github.com/aspect-build/rules_swc[rules_swc] using the link:https://swc.rs/[SWC] javascript toolchain
+** link:https://github.com/bazelbuild/rules_closure[rules_closure] using Google's link:https://developers.google.com/closure/[Closure Tools]
+
+
+== The Conversion Process
+
+Nutshell:
+
+1.  `bazel run @obazl//new:ws`
+2.  `bazel run @opam//shared:refresh`
+3.  `bazel run @obazl//convert`
+4.  hand-edit BUILD.bazel files as needed.
+
+The `bazel/dune` branch contains the result of this process.
+
+
+== Bazel JS Ecosystem Integration
+
+A major benefit of building with Bazel is integration with other Bazel
+rulesets. This is particularly useful for Jsoo development, since it
+is not possible to emit a true executable Javascript file - to run the
+results of Jsoo compilation and linking, you must use a tool like
+`node`.
+
+For compiled languages like OCaml, the output of a rule that produces
+executables (like `ocaml_binary`) is indeed an executable file. That
+means you can run it from Bazel (`$ bazel run //foo/bar:baz`).
+Similarly, test rules (e.g. `ocaml_test`) also produce executable
+files; they can be run using `bazel run`, but they can also be run
+using `bazel test`, which runs them in an environment specifically
+designed for running tests. Bazel's test support is extensive and
+sophisticated, so the ability to use `bazel test` to run Jsoo tests is
+very very desireable.
+
+The output of the Jsoo compiler is not executable in this sense. You
+cannot run it using either `bazel run` or `bazel test`, since neither
+of those knows that you need to use `node` (or some other tool) to run
+them. To make that possible, we would have to write code to integrate
+node or similar and use it to create a genuine executable output.
+That's a non-trivial task, since it involves the (complex)
+Javascript/nodejs ecosystem, dealing with versioning, npm
+dependencies, and heaven knows what else.
+
+Fortunately we do not need to do this, since we can easily integrate
+Jsoo with Bazel rulesets that already solve the problem. For example,
+the `js_binary` rule from `rules_js` emits a script that can be run by
+`bazel run`; it uses `node` as the runner. The ruleset can be easily
+configured to select a specific version of `node`. The rules include
+integrated support of npm and the Javascript ecosystem in general.
+
+The rules in `rules_jsoo` support integration with `rules_js`, which
+means you can list a `jsoo_binary` target as dependency of a
+`js_binary` target. The `jsoo_binary` rule will use the jsoo compiler
+to convert its inputs to Javascript, which it will deliver (as a
+dependency) to the `js_binary` tool, which turns javascript inputs
+into an executable artifact.
+
+=== Providers
+
+The glue that makes this work is the "provider" `JsInfo` defined by
+`rules_js`. The rules in `rules_js` consume and emit `JsInfo`
+providers; to enable integration in `rules_jsoo`, all we need to to is
+import the `JsInfo` definition from `rules_js` and then use it to
+package our rule outputs. Once our rules are capable of emitting
+`JsInfo`, we can integrate them with any tool that consumes `JsInfo`.
+
+In sum: the rules in `rules_jsoo` consume `OcamlProvider` providers
+(containing bytecode files), run the jsoo compiler (obtained from a
+JsooToolchain that we define) and emit `JsInfo` providers.
+
+NOTE: Incidentally, OCaml bytecode executables only work with `bazel
+run` because they are "autoexecutables" that know how to run
+themselves with `ocamlrun`. If you produce a "raw" bytecode executable
+that must be run using `ocamlrun`, you will not be able to run it with
+`bazel run`. Note that this is a capability that could be added to
+OBazl.
+
+=== Toolchains
+
+
+
+== Branches
+
+* _bazel/dune_. Result of `@obazl//convert` with no modifications (except for two files that require manual intervention)
+* _bazel/optimized_. Build optimization generally means minimizing
+  dependencies, preprocessing, command options, etc. Build targets
+  should not have any spurious dependencies, should not be
+  preprocessed unless they need to be, and should not be passed
+  options they do not need (e.g. compile options passed to a link
+  action). This branch demonstrations partial optimization of the
+  `bazel/dune` branch. For example, a `(preprocess (pps ..))` field in
+  a Dune library stanza means that every module in the library will be
+  PPX-preprocessed. With OBazl we can restrict such processing to
+  those targets that actually need it. See for example
+  link:../../compiler/lib[../../compiler/lib]. The
+  `js_of_ocaml_compiler` library defined by the Dune file contains
+  over 50 modules, but only two of them them require PPX
+  preprocessing.
+* _bazel/rules_jsoo_ - demonstrates integration with link:https://github.com/obazl/rules_jsoo[rules_jsoo]
+* _bazel/rules_js_ - demonstrates integration with link:https://github.com/aspect-build/rules_js[rules_js]
+* _bazel/rules_swc_ - demonstrates integration with link:https://github.com/aspect-build/rules_swc[rules_swc]
+* _bazel/rules_swc_ - demonstrates integration with link:https://github.com/bazelbuild/rules_closure[rules_closure]
+
+
+=== bazel/dune
+
+Result of `@obazl//convert` with minimal customization.
+
+The converter cannot handle all possible Dune stanzas:
+
+* Tuareg dune files must be converted by hand.
+* The converter cannot (yet) handle some Dune fields. For example,
+  link:../../compiler/tests-io/dune[../../compiler/tests-io/dune] use
+  `pipe-stdout`, which is not yet supported. Most of such fields are
+  used in test targets; we're adding support as we go, and plan to
+  eventually support them all.
+
+Jsoo contains one Tuareg file,
+link:../../tools/version/dune[../../tools/version/dune], which was
+converted to
+link:../../tools/version/BUILD.bazel[../../tools/version/BUILD.bazel]
+and link:../../tools/version/BUILD.bzl[../../tools/version/BUILD.bzl].
+
+This is probably the most complicated part of the conversion, since it
+requires a relatively obscure Bazel feature. The tuareg code runs a
+`git` command to obtain a version string, which it writes to a file
+named GIT-VERSION, which is used elsewhere in the build.
+
+Running a tool like `git` as a build target is in general not feasible
+in Bazel, since it must be run from the project root containing git
+project resources like the `.git` subdirectory. Bazel does not run
+tools in the project root. But Bazel does have a "stamping" feature
+that can be used to do this kind of thing, which is we use here. See
+link:https://docs.bazel.build/versions/main/user-manual.html#workspace_status[Workplace
+Status] for more information.
