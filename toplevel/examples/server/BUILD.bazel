@@ -1,0 +1,33 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "@bytes//lib/bytes",
+    "@findlib//lib/findlib",
+    "@cohttp-lwt-unix//lib/cohttp-lwt-unix"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "server.exe",
+    main     = ":Server",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Server",
+    struct        = "server.ml",
+    deps          = DEPS_1,
+)
+
+######################## Modules & Signatures ########################
+
+
+

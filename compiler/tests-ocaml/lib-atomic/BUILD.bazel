@@ -1,0 +1,44 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "test_atomic.exe.js",
+    entry_point = ":test_atomic.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "test_atomic.exe.jsoo",
+    main   = ":test_atomic.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "test_atomic.exe",
+    main     = ":Test_atomic",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Test_atomic",
+    struct        = "test_atomic.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+

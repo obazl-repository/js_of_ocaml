@@ -1,0 +1,45 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "//compiler/lib:js_of_ocaml_compiler",
+    "@ocaml//unix",
+    "@ocaml//str"
+]
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "jsoo_compiler_expect_tests_helper",
+    ns         = "jsoo_compiler_expect_tests_helper",
+    manifest = [
+        ":Filetype_intf",
+        ":Util"
+    ],
+)
+
+######################## Modules & Signatures ########################
+ocaml_module(
+    name          = "Util",
+    struct        = "util.ml",
+    sig           = "util.mli",
+    deps          = DEPS_1 + [
+        ":Filetype_intf"
+    ],
+)
+
+
+ocaml_module(
+    name          = "Filetype_intf",
+    struct        = "filetype_intf.ml",
+    deps          = DEPS_1,
+)
+
+
+

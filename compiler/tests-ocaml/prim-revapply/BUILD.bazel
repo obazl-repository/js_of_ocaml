@@ -1,0 +1,108 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "apply.exe.js",
+    entry_point = ":apply.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "apply.exe.jsoo",
+    main   = ":apply.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "apply.exe",
+    main     = ":Apply",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Apply",
+    struct        = "apply.ml",
+)
+
+#############
+js_binary(
+    name        = "revapply.exe.js",
+    entry_point = ":revapply.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "revapply.exe.jsoo",
+    main   = ":revapply.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "revapply.exe",
+    main     = ":Revapply",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Revapply",
+    struct        = "revapply.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "apply.reference",
+    srcs  = [
+        ":apply.reference",
+        ":apply.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :apply.reference)`",
+        "`realpath $(location :apply.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "revapply.reference",
+    srcs  = [
+        ":revapply.reference",
+        ":revapply.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :revapply.reference)`",
+        "`realpath $(location :revapply.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

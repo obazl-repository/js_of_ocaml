@@ -1,0 +1,168 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_module",
+     "ocaml_test",
+)
+
+load("@rules_jsoo//build:rules.bzl",
+     "jsoo_binary",
+     "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+## :executable deps: test
+##############################
+####  Executable Targets  ####
+#############
+
+js_test(
+    name = "test.exe.js.runner",
+    entry_point = ":test.exe.js",
+    include_transitive_sources = True,
+    # copy_data_to_bin = True
+)
+
+# $ (cd _build/default/compiler/tests-ocaml/lib-bool && ../../../../install/default/bin/js_of_ocaml link --source-map-inline -o test.bc.js test.bc.runtime.js ../../../.js/stdlib/stdlib.cma.js .test.eobjs/byte/dune__exe__Test.cmo.js ../../../.js/stdlib/std_exit.cmo.js)
+
+## just like js_binary, except it jsoo compiles entry_point
+jsoo_binary(
+    # uses JsInfo, from rules_js
+    name = "test.exe.js",  ## decouple from output filename?
+    main = ":test.exe",  ## cmo output of ocaml_binary target
+    # opts = ["--source-map-inline"]
+)
+
+ocaml_binary(
+    name     = "test.exe",
+    # exe      = "test",
+    # main = ":Test",
+    manifest   = [":Lib_bool.test"],
+    opts = ["-w", "+A"],
+    visibility = ["//visibility:public"],
+)
+
+jsoo_library( # macro
+    name = "jsoo_lib",
+    srcs = [ ## targets providing bc, i.e. ocaml_modules
+        "Lib_bool.test",
+    ],
+    opts = ["--pretty", "--source-map-inline"],
+    # compiler = "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    # emits one filegroup per src with .js suffix
+    # emits one hidden _jsoo_library target that runs the jsoo compiler
+    # against the sources.
+    # _jsoo_library emits what? one js file or one per source?
+)
+
+
+# genrule(
+#     outs  = [
+#         "test.bc.js"
+#     ],
+#     name  = "__test.bc.js__",
+#     srcs  = [
+#         ":Lib_bool.test.cmo.js",
+#         "//runtime:jsoo_runtime.js",
+#         "//runtime:stdlib.cma.js",
+#         "//runtime:std_exit.cmo.js"
+#     ],
+#     cmd   = " ".join([
+#         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+#         "link",
+#         # "--source-map-inline",
+#         "-o",
+#         "$@",
+#         "$(location :test.bc.runtime.js)",
+#         "$(location //runtime:stdlib.cma.js)",
+#         "$(location :Lib_bool.test.cmo.js)",
+#         "$(location //runtime:std_exit.cmo.js)"
+#     ]),
+#     exec_tools = [
+#         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+#     ]
+# )
+
+# genrule(
+#     outs  = [
+#         "Lib_bool.test.cmo.js"
+#     ],
+#     name  = "__Lib_bool.test.cmo.js__",
+#     srcs  = [
+#         ":Lib_bool.test.cmo"
+#     ],
+#     cmd   = " ".join([
+#         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+#         "--pretty",
+#         "--source-map-inline",
+#         "-o",
+#         "$@",
+#         "$(location :Lib_bool.test.cmo)"
+#     ]),
+#     exec_tools = [
+#         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+#     ]
+# )
+
+## macro that generates both ocaml_module and filegroup to get .cmo
+# jsoo_module(
+#     name = "Lib_bool.test",
+#     ...
+# )
+# filegroup(
+#     name = "Lib_bool.test.cmo",
+#     srcs = ["Lib_bool.test"],
+#     data = ["Lib_bool.test"],
+#     output_group = "struct"
+# )
+
+## in this case we do not need a proper namespace, just a unique name.
+## this is an execution-only module, so we can name it anything.
+ocaml_module(
+    name   = "Lib_bool.test",
+    # module = "Test",
+    struct = "test.ml",
+)
+
+##############################
+####  Test Targets  ####
+#############
+sh_test(
+    name     = "runtest",
+    srcs     = ["diff"],
+    data     = [
+        "//compiler/tests-ocaml/lib-bool:test.reference",
+        "//compiler/tests-ocaml/lib-bool:test.referencejs"
+    ],
+    args     = [
+        "$(location //compiler/tests-ocaml/lib-bool:test.reference)",
+        "$(location //compiler/tests-ocaml/lib-bool:test.referencejs)"
+    ],
+    visibility = ["//visibility:public"],
+)
+
+########################
+####  Rule Targets  ####
+
+################  rule  ################
+genrule(
+    outs  = [
+        "test.referencejs"
+    ],
+    name  = "__test.referencejs__",
+    srcs  = [
+        ":test.bc.js"
+    ],
+    cmd   = " ".join([
+        "$(execpath node)",
+        "./test.bc.js",
+        "> $@"
+    ]),
+    exec_tools = [
+        "node"
+    ]
+)
+

@@ -1,0 +1,81 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "@bytes//lib/bytes",
+    "//compiler/lib:js_of_ocaml_compiler",
+    "//compiler/lib-findlib-support:jsoo_findlib_support",
+    "//compiler/lib-runtime-files:js_of_ocaml_compiler_runtime_files"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "jsoo_mkcmis.exe",
+    main     = ":Jsoo_mkcmis",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Jsoo_mkcmis",
+    struct        = "jsoo_mkcmis.ml",
+X4    opts          = ["-open", "Jsoo_mkcmis_execlib"],
+    deps          = [":bin_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_binary(
+    name     = "jsoo_mktop.exe",
+    main     = ":Jsoo_mktop",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Jsoo_mktop",
+    struct        = "jsoo_mktop.ml",
+X4    opts          = ["-open", "Jsoo_mktop_execlib"],
+    deps          = [":bin_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_binary(
+    name     = "jsoo_listunits.exe",
+    main     = ":Jsoo_listunits",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Jsoo_listunits",
+    struct        = "jsoo_listunits.ml",
+X4    opts          = ["-open", "Jsoo_listunits_execlib"],
+    deps          = [":bin_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+############################ Exec Libs ###############################
+ocaml_ns_library(
+    name = "bin_execlib",
+    manifest = [
+        ":Jsoo_common"
+    ],
+    visibility = ["//visibility:private"],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Jsoo_common",
+    struct        = "jsoo_common.ml",
+X5    opts          = ["-open", "#f_execlib"],
+    deps          = DEPS_1,
+    visibility    = ["//visibility:private"]
+)
+
+
+

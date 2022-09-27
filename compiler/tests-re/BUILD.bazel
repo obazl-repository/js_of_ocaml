@@ -1,0 +1,50 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+DEPS_1 = [
+    "@ocaml//str",
+    "@re//lib/re"
+]
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "test_str.exe.js",
+    entry_point = ":test_str.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "test_str.exe.jsoo",
+    main   = ":test_str.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "test_str.exe",
+    main     = ":Test_str",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Test_str",
+    struct        = "test_str.ml",
+    deps          = DEPS_1,
+)
+
+######################## Modules & Signatures ########################
+
+
+

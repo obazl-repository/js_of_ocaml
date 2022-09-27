@@ -1,0 +1,83 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "@ocaml//dynlink",
+    "//toplevel/lib:js_of_ocaml_toplevel"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "main.exe",
+    main     = ":Main",
+    visibility = ["//visibility:public"],
+    target_compatible_with = ["@ocaml//host/target:vm?"]
+)
+
+ocaml_module(
+    name          = "Main",
+    struct        = "main.ml",
+    deps          = DEPS_1,
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Plugin",
+    struct        = "plugin.ml",
+)
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "main.js"
+    ],
+    name  = "__main.js__",
+    srcs  = [
+        ":plugin.cmo",
+        ":main.exe"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "--dynlink",
+        "+dynlink.js",
+        "--toplevel",
+        "+toplevel.js",
+        "-I",
+        "./",
+        "--file",
+        "`realpath $(location :plugin.cmo)`",
+        "-o",
+        "$(location main.js)",
+        "`realpath $(location :main.exe)`",
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "main.out.expected",
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "main.out.expected",
+        "main.out",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

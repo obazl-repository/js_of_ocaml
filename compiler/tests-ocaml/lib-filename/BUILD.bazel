@@ -1,0 +1,108 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "suffix.exe.js",
+    entry_point = ":suffix.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "suffix.exe.jsoo",
+    main   = ":suffix.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "suffix.exe",
+    main     = ":Suffix",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Suffix",
+    struct        = "suffix.ml",
+)
+
+#############
+js_binary(
+    name        = "extension.exe.js",
+    entry_point = ":extension.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "extension.exe.jsoo",
+    main   = ":extension.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "extension.exe",
+    main     = ":Extension",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Extension",
+    struct        = "extension.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "suffix.reference",
+    srcs  = [
+        ":suffix.reference",
+        ":suffix.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :suffix.reference)`",
+        "`realpath $(location :suffix.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "extension.reference",
+    srcs  = [
+        ":extension.reference",
+        ":extension.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :extension.reference)`",
+        "`realpath $(location :extension.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

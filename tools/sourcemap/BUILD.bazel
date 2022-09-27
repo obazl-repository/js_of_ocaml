@@ -1,0 +1,38 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "//compiler/lib:js_of_ocaml_compiler",
+    "@ocaml//compiler-libs/common",
+    "//compiler/lib-findlib-support:jsoo_findlib_support"
+]
+
+OPTS_1 = [
+        "-safe-string"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "jsoo_sourcemap.exe",
+    main     = ":Jsoo_sourcemap",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Jsoo_sourcemap",
+    struct        = "jsoo_sourcemap.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+)
+
+######################## Modules & Signatures ########################
+
+
+

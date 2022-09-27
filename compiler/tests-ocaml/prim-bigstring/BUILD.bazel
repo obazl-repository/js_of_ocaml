@@ -1,0 +1,108 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "bigstring_access.exe.js",
+    entry_point = ":bigstring_access.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "bigstring_access.exe.jsoo",
+    main   = ":bigstring_access.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "bigstring_access.exe",
+    main     = ":Bigstring_access",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Bigstring_access",
+    struct        = "bigstring_access.ml",
+)
+
+#############
+js_binary(
+    name        = "string_access.exe.js",
+    entry_point = ":string_access.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "string_access.exe.jsoo",
+    main   = ":string_access.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "string_access.exe",
+    main     = ":String_access",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "String_access",
+    struct        = "string_access.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "bigstring_access.reference",
+    srcs  = [
+        ":bigstring_access.reference",
+        ":bigstring_access.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :bigstring_access.reference)`",
+        "`realpath $(location :bigstring_access.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "string_access.reference",
+    srcs  = [
+        ":string_access.reference",
+        ":string_access.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :string_access.reference)`",
+        "`realpath $(location :string_access.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

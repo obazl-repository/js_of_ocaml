@@ -1,0 +1,153 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+DEPS_1 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "@ocaml//unix"
+]
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "jsoo_lib_expect_tests",
+    ns         = "jsoo_lib_expect_tests",
+    manifest = [
+        ":Test_css_angle",
+        ":Test_css_color",
+        ":Test_css_length",
+        ":Test_fun_call",
+        ":Test_json",
+        ":Test_nodejs_filesystem_errors",
+        ":Test_poly_compare",
+        ":Test_regexp",
+        ":Test_sys",
+        ":Test_typed_array",
+        ":Test_unsafe_set_get",
+        ":Test_url"
+    ],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Test_css_angle",
+    struct        = "test_css_angle.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_css_color",
+    struct        = "test_css_color.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_css_length",
+    struct        = "test_css_length.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_fun_call",
+    struct        = "test_fun_call.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_json",
+    struct        = "test_json.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_nodejs_filesystem_errors",
+    struct        = "test_nodejs_filesystem_errors.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_poly_compare",
+    struct        = "test_poly_compare.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_regexp",
+    struct        = "test_regexp.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_sys",
+    struct        = "test_sys.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_typed_array",
+    struct        = "test_typed_array.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_unsafe_set_get",
+    struct        = "test_unsafe_set_get.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_url",
+    struct        = "test_url.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+
+
+###############
+ppx_executable(
+    name    = "ppx_1.exe",
+    main    = ":Ppx_driver",
+    deps = [
+        "//ppx/ppx_js/lib_internal:ppx_js_internal",
+        "@ppx_expect//lib/ppx_expect"
+    ],
+    ## @ppx_inline_test//lib/ppx_inline_test
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+

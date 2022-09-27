@@ -1,0 +1,272 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+OPTS_1 = [
+        "-no-strict-formats"
+]
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "pr6824.exe.js",
+    entry_point = ":pr6824.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "pr6824.exe.jsoo",
+    main   = ":pr6824.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "pr6824.exe",
+    main     = ":Pr6824",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Pr6824",
+    struct        = "pr6824.ml",
+    opts          = ["-open", "Lib_format_execlib"] + OPTS_1,
+    deps          = [":lib_format_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+#############
+js_binary(
+    name        = "print_if_newline.exe.js",
+    entry_point = ":print_if_newline.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "print_if_newline.exe.jsoo",
+    main   = ":print_if_newline.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "print_if_newline.exe",
+    main     = ":Print_if_newline",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Print_if_newline",
+    struct        = "print_if_newline.ml",
+    opts          = ["-open", "Lib_format_execlib"] + OPTS_1,
+    deps          = [":lib_format_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+#############
+js_binary(
+    name        = "pp_print_custom_break.exe.js",
+    entry_point = ":pp_print_custom_break.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "pp_print_custom_break.exe.jsoo",
+    main   = ":pp_print_custom_break.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "pp_print_custom_break.exe",
+    main     = ":Pp_print_custom_break",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Pp_print_custom_break",
+    struct        = "pp_print_custom_break.ml",
+    opts          = ["-open", "Lib_format_execlib"] + OPTS_1,
+    deps          = [":lib_format_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+#############
+js_binary(
+    name        = "print_seq.exe.js",
+    entry_point = ":print_seq.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "print_seq.exe.jsoo",
+    main   = ":print_seq.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "print_seq.exe",
+    main     = ":Print_seq",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Print_seq",
+    struct        = "print_seq.ml",
+    opts          = ["-open", "Lib_format_execlib"] + OPTS_1,
+    deps          = [":lib_format_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+#############
+js_binary(
+    name        = "tformat.exe.js",
+    entry_point = ":tformat.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "tformat.exe.jsoo",
+    main   = ":tformat.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "tformat.exe",
+    main     = ":Tformat",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Tformat",
+    struct        = "tformat.ml",
+    opts          = ["-open", "Lib_format_execlib"] + OPTS_1,
+    deps          = [":lib_format_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+############################ Exec Libs ###############################
+ocaml_ns_library(
+    name = "lib_format_execlib",
+    manifest = [
+        ":Testing"
+    ],
+    visibility = ["//visibility:private"],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Testing",
+    struct        = "testing.ml",
+    opts          = OPTS_1,
+    visibility    = ["//visibility:private"]
+)
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "pr6824.reference",
+    srcs  = [
+        ":pr6824.reference",
+        ":pr6824.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :pr6824.reference)`",
+        "`realpath $(location :pr6824.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "print_if_newline.reference",
+    srcs  = [
+        ":print_if_newline.reference",
+        ":print_if_newline.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :print_if_newline.reference)`",
+        "`realpath $(location :print_if_newline.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "pp_print_custom_break.reference",
+    srcs  = [
+        ":pp_print_custom_break.reference",
+        ":pp_print_custom_break.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :pp_print_custom_break.reference)`",
+        "`realpath $(location :pp_print_custom_break.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "print_seq.reference",
+    srcs  = [
+        ":print_seq.reference",
+        ":print_seq.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :print_seq.reference)`",
+        "`realpath $(location :print_seq.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "tformat.reference",
+    srcs  = [
+        ":tformat.reference",
+        ":tformat.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :tformat.reference)`",
+        "`realpath $(location :tformat.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

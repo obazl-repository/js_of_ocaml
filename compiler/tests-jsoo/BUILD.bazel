@@ -1,0 +1,158 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+     "cc_selection_proxy",
+)
+
+DEPS_1 = [
+    "@ocaml//unix"
+]
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "jsoo_testsuite",
+    ns         = "jsoo_testsuite",
+    manifest = [
+        ":Test_bigarray",
+        ":Test_channel",
+        ":Test_floats",
+        ":Test_fma",
+        ":Test_ints",
+        ":Test_io",
+        ":Test_marshal",
+        ":Test_obj",
+        ":Test_rec_mod",
+        ":Test_time"
+    ],
+    cc_deps    = ["__libjsoo_testsuite__"],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Test_bigarray",
+    struct        = "test_bigarray.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_channel",
+    struct        = "test_channel.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_floats",
+    struct        = "test_floats.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_fma",
+    struct        = "test_fma.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_ints",
+    struct        = "test_ints.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_io",
+    struct        = "test_io.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_marshal",
+    struct        = "test_marshal.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_obj",
+    struct        = "test_obj.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_rec_mod",
+    struct        = "test_rec_mod.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Test_time",
+    struct        = "test_time.ml",
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+
+
+###############
+ppx_executable(
+    name    = "ppx_1.exe",
+    main    = ":Ppx_driver",
+    deps = [
+        "@ppx_expect//lib/ppx_expect"
+    ],
+    ## @ppx_inline_test//lib/ppx_inline_test
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+
+## cc: ((:name . jsoo_testsuite) (:srcs bigarray_stubs))
+################ ################
+cc_selection_proxy(
+    name = "__libjsoo_testsuite__",
+    selection = select({
+        "@ocaml//host/target:vm?": ["dlljsoo_testsuite.stubs.so"],
+        "@ocaml//host/target:sys?": ["jsoo_testsuite.stubs"],
+        "//conditions:default": ["jsoo_testsuite.stubs"]    })
+)
+
+cc_binary(
+    name = "dlljsoo_testsuite.stubs.so",
+    linkshared = True,
+    srcs = ["bigarray_stubs.c"],
+)
+
+cc_library(
+    name = "jsoo_testsuite.stubs",
+    linkstatic = True,
+    srcs = ["bigarray_stubs.c"],
+)

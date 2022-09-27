@@ -1,0 +1,108 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "hfun.exe.js",
+    entry_point = ":hfun.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "hfun.exe.jsoo",
+    main   = ":hfun.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "hfun.exe",
+    main     = ":Hfun",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Hfun",
+    struct        = "hfun.ml",
+)
+
+#############
+js_binary(
+    name        = "htbl.exe.js",
+    entry_point = ":htbl.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "htbl.exe.jsoo",
+    main   = ":htbl.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "htbl.exe",
+    main     = ":Htbl",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Htbl",
+    struct        = "htbl.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "hfun.referencejs",
+    srcs  = [
+        ":hfun.referencejs",
+        ":hfun.reference"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :hfun.referencejs)`",
+        "`realpath $(location :hfun.reference)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "htbl.reference",
+    srcs  = [
+        ":htbl.reference",
+        ":htbl.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :htbl.reference)`",
+        "`realpath $(location :htbl.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

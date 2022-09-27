@@ -1,0 +1,168 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+DEPS_1 = [
+    "@ocaml//num/core"
+]
+
+OPTS_1 = [
+        "-linkall",
+        "-w",
+        "-3-7-33-35-37",
+        "-safe-string",
+        "-no-strict-sequence"
+]
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "main.exe.js",
+    entry_point = ":main.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "main.exe.jsoo",
+    main   = ":main.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "main.exe",
+    main     = ":Main",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Main",
+    struct        = "main.ml",
+    opts          = ["-open", "Tests_num_execlib"] + OPTS_1,
+    deps          = [":tests_num_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+############################ Exec Libs ###############################
+ocaml_ns_library(
+    name = "tests_num_execlib",
+    manifest = [
+        ":Test",
+        ":Test_big_ints",
+        ":Test_io",
+        ":Test_nats",
+        ":Test_nums",
+        ":Test_ratios"
+    ],
+    visibility = ["//visibility:private"],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Test",
+    struct        = "test.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_module(
+    name          = "Test_big_ints",
+    struct        = "test_big_ints.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1 + [
+        ":Test"
+    ],
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_module(
+    name          = "Test_io",
+    struct        = "test_io.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1 + [
+        ":Test"
+    ],
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_module(
+    name          = "Test_nats",
+    struct        = "test_nats.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1 + [
+        ":Test"
+    ],
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_module(
+    name          = "Test_nums",
+    struct        = "test_nums.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1 + [
+        ":Test"
+    ],
+    visibility    = ["//visibility:private"]
+)
+
+ocaml_module(
+    name          = "Test_ratios",
+    struct        = "test_ratios.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1 + [
+        ":Test"
+    ],
+    visibility    = ["//visibility:private"]
+)
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "main.reference"
+    ],
+    name  = "__main.reference__",
+    cmd   = " ".join([
+,
+        "$(execpath //ppx/ppx_js/tests:main.exe)",
+
+        "> $@"
+    ]),
+    exec_tools = [
+        "//ppx/ppx_js/tests:main.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "main.reference",
+    srcs  = [
+        ":main.reference",
+        ":main.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :main.reference)`",
+        "`realpath $(location :main.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

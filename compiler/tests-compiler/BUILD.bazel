@@ -1,0 +1,625 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+     "ppx_executable",
+)
+
+DEPS_1 = [
+    "//compiler/lib:js_of_ocaml_compiler",
+    "@ocaml//unix",
+    "@ocaml//str",
+    "//compiler/tests-compiler/util:jsoo_compiler_expect_tests_helper"
+]
+
+OPTS_1 = [
+        "-open",
+        "Jsoo_compiler_expect_tests_helper"
+]
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_array_access",
+    ns         = "jsooexp_array_access",
+    manifest = [
+        ":Array_access"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_build_path_prefix_map",
+    ns         = "jsooexp_build_path_prefix_map",
+    manifest = [
+        ":Build_path_prefix_map"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_call_gen",
+    ns         = "jsooexp_call_gen",
+    manifest = [
+        ":Call_gen"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_cond",
+    ns         = "jsooexp_cond",
+    manifest = [
+        ":Cond"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_eliminate_exception_handler",
+    ns         = "jsooexp_eliminate_exception_handler",
+    manifest = [
+        ":Eliminate_exception_handler"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_empty_cma",
+    ns         = "jsooexp_empty_cma",
+    manifest = [
+        ":Empty_cma"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_end_to_end",
+    ns         = "jsooexp_end_to_end",
+    manifest = [
+        ":End_to_end"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_error",
+    ns         = "jsooexp_error",
+    manifest = [
+        ":Error"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_exceptions",
+    ns         = "jsooexp_exceptions",
+    manifest = [
+        ":Exceptions"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_exports",
+    ns         = "jsooexp_exports",
+    manifest = [
+        ":Exports"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_getenv",
+    ns         = "jsooexp_getenv",
+    manifest = [
+        ":Getenv"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_gh1007",
+    ns         = "jsooexp_gh1007",
+    manifest = [
+        ":Gh1007"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_gh1051",
+    ns         = "jsooexp_gh1051",
+    manifest = [
+        ":Gh1051"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_gl507",
+    ns         = "jsooexp_gl507",
+    manifest = [
+        ":Gl507"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_inlining",
+    ns         = "jsooexp_inlining",
+    manifest = [
+        ":Inlining"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_js_parser_printer",
+    ns         = "jsooexp_js_parser_printer",
+    manifest = [
+        ":Js_parser_printer"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_lazy",
+    ns         = "jsooexp_lazy",
+    manifest = [
+        ":Lazy"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_macro",
+    ns         = "jsooexp_macro",
+    manifest = [
+        ":Macro"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_match_with_exn",
+    ns         = "jsooexp_match_with_exn",
+    manifest = [
+        ":Match_with_exn"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_mutable_closure",
+    ns         = "jsooexp_mutable_closure",
+    manifest = [
+        ":Mutable_closure"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_obj",
+    ns         = "jsooexp_obj",
+    manifest = [
+        ":Obj"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_obj_dup",
+    ns         = "jsooexp_obj_dup",
+    manifest = [
+        ":Obj_dup"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_side_effect",
+    ns         = "jsooexp_side_effect",
+    manifest = [
+        ":Side_effect"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_sourcemap",
+    ns         = "jsooexp_sourcemap",
+    manifest = [
+        ":Sourcemap"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_static_eval",
+    ns         = "jsooexp_static_eval",
+    manifest = [
+        ":Static_eval"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_sys_command",
+    ns         = "jsooexp_sys_command",
+    manifest = [
+        ":Sys_command"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_sys_fs",
+    ns         = "jsooexp_sys_fs",
+    manifest = [
+        ":Sys_fs"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_tailcall",
+    ns         = "jsooexp_tailcall",
+    manifest = [
+        ":Tailcall"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_target_env",
+    ns         = "jsooexp_target_env",
+    manifest = [
+        ":Target_env"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_unix_fs",
+    ns         = "jsooexp_unix_fs",
+    manifest = [
+        ":Unix_fs"
+    ],
+)
+
+#################
+ocaml_ns_archive(
+    name       = "jsooexp_variable_declaration_output",
+    ns         = "jsooexp_variable_declaration_output",
+    manifest = [
+        ":Variable_declaration_output"
+    ],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Array_access",
+    struct        = "array_access.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Build_path_prefix_map",
+    struct        = "build_path_prefix_map.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Call_gen",
+    struct        = "call_gen.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Cond",
+    struct        = "cond.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Eliminate_exception_handler",
+    struct        = "eliminate_exception_handler.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Empty_cma",
+    struct        = "empty_cma.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "End_to_end",
+    struct        = "end_to_end.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Error",
+    struct        = "error.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Exceptions",
+    struct        = "exceptions.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Exports",
+    struct        = "exports.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Getenv",
+    struct        = "getenv.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Gh1007",
+    struct        = "gh1007.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Gh1051",
+    struct        = "gh1051.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Gl507",
+    struct        = "gl507.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Inlining",
+    struct        = "inlining.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Js_parser_printer",
+    struct        = "js_parser_printer.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Lazy",
+    struct        = "lazy.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Macro",
+    struct        = "macro.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Match_with_exn",
+    struct        = "match_with_exn.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Mutable_closure",
+    struct        = "mutable_closure.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Obj",
+    struct        = "obj.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Obj_dup",
+    struct        = "obj_dup.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Side_effect",
+    struct        = "side_effect.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Sourcemap",
+    struct        = "sourcemap.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Static_eval",
+    struct        = "static_eval.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Sys_command",
+    struct        = "sys_command.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Sys_fs",
+    struct        = "sys_fs.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Tailcall",
+    struct        = "tailcall.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Target_env",
+    struct        = "target_env.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Unix_fs",
+    struct        = "unix_fs.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+ocaml_module(
+    name          = "Variable_declaration_output",
+    struct        = "variable_declaration_output.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+    ppx           = ":ppx_1.exe",
+)
+
+
+
+###############
+ppx_executable(
+    name    = "ppx_1.exe",
+    main    = ":Ppx_driver",
+    deps = [
+        "@ppx_expect//lib/ppx_expect"
+    ],
+    ## @ppx_inline_test//lib/ppx_inline_test
+)
+
+#############
+ocaml_module(
+    name       = "Ppx_driver",
+    struct     = ":ppx_driver.ml",
+    visibility = ["//visibility:public"],
+    deps       = ["@ppxlib//lib/ppxlib"],
+)
+
+########
+genrule(
+    name = "__ppx_driver__",
+    outs = ["ppx_driver.ml"],
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
+    ])
+)
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "dune.inc.gen"
+    ],
+    name  = "__dune.inc.gen__",
+    srcs  = [
+        "//compiler/tests-compiler:glob_STAR.ml"
+    ],
+    cmd   = " ".join([
+        "cp $(locations //compiler/tests-compiler:glob_STAR.ml) . ;",
+        "$(execpath //compiler/tests-compiler/gen-rules:gen.exe)",
+
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/tests-compiler/gen-rules:gen.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "dune.inc",
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "dune.inc",
+        "dune.inc.gen",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+
+filegroup(
+    name = "glob_STAR.ml",
+    srcs = glob(["*.ml"]),
+    visibility = ["//visibility:public"]
+)
+
+

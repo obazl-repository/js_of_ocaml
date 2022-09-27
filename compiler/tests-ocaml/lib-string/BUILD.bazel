@@ -1,0 +1,89 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "test_string.exe.js",
+    entry_point = ":test_string.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "test_string.exe.jsoo",
+    main   = ":test_string.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "test_string.exe",
+    main     = ":Test_string",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Test_string",
+    struct        = "test_string.ml",
+)
+
+#############
+js_binary(
+    name        = "binary.exe.js",
+    entry_point = ":binary.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "binary.exe.jsoo",
+    main   = ":binary.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "binary.exe",
+    main     = ":Binary",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Binary",
+    struct        = "binary.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "test_string.reference",
+    srcs  = [
+        ":test_string.reference",
+        ":test_string.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :test_string.reference)`",
+        "`realpath $(location :test_string.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

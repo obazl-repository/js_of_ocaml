@@ -1,0 +1,65 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "md5.exe.js",
+    entry_point = ":md5.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "md5.exe.jsoo",
+    main   = ":md5.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "md5.exe",
+    main     = ":Md5",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Md5",
+    struct        = "md5.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "md5.reference",
+    srcs  = [
+        ":md5.reference",
+        ":md5.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :md5.reference)`",
+        "`realpath $(location :md5.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

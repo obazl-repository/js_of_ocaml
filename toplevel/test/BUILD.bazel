@@ -1,0 +1,107 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "//toplevel/lib:js_of_ocaml_toplevel"
+]
+
+OPTS_1 = [
+        "-linkall"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "test_toplevel.exe",
+    main     = ":Test_toplevel",
+    visibility = ["//visibility:public"],
+    target_compatible_with = ["@ocaml//host/target:vm?"]
+)
+
+ocaml_module(
+    name          = "Test_toplevel",
+    struct        = "test_toplevel.ml",
+    opts          = OPTS_1,
+    deps          = DEPS_1,
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "export.txt"
+    ],
+    name  = "__export.txt__",
+    srcs  = [
+        "@ocaml//lib/stdlib:stdlib"
+    ],
+    cmd   = " ".join([
+        "$(execpath //toplevel/bin:jsoo_listunits.exe)",
+        "-o",
+        "$(location export.txt)",
+        "`realpath $(location @ocaml//lib/stdlib:stdlib)`",
+    ]),
+    exec_tools = [
+        "//toplevel/bin:jsoo_listunits.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+        "test_toplevel.js"
+    ],
+    name  = "__test_toplevel.js__",
+    srcs  = [
+        ":export.txt",
+        ":test_toplevel.exe"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "-I",
+        "./",
+        "--export",
+        "`realpath $(location :export.txt)`",
+        "--toplevel",
+        "--disable",
+        "shortvar",
+        "+toplevel.js",
+        "+dynlink.js",
+        "`realpath $(location :test_toplevel.exe)`",
+        "-o",
+        "$(location test_toplevel.js)",
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "test_toplevel.reference",
+    srcs  = [
+        ":test_toplevel.reference",
+        ":test_toplevel.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :test_toplevel.reference)`",
+        "`realpath $(location :test_toplevel.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

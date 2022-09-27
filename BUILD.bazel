@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "version.ml.in"
+    ],
+    name  = "__version.ml.in__",
+    srcs  = [
+        ":VERSION",
+        "//tools/version:GIT-VERSION"
+    ],
+    cmd   = " ".join([
+        "$(execpath //tools/version/gen:gen.exe)",
+        "`realpath $(location :VERSION)`",
+        "`realpath $(location //tools/version:GIT-VERSION)`",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//tools/version/gen:gen.exe"
+    ]
+)
+

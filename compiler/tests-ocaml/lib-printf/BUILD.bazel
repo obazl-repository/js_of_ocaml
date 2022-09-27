@@ -1,0 +1,180 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+OPTS_1 = [
+        "-no-strict-formats"
+]
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "pr6534.exe.js",
+    entry_point = ":pr6534.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "pr6534.exe.jsoo",
+    main   = ":pr6534.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "pr6534.exe",
+    main     = ":Pr6534",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Pr6534",
+    struct        = "pr6534.ml",
+    opts          = ["-open", "Lib_printf_execlib"] + OPTS_1,
+    deps          = [":lib_printf_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+#############
+js_binary(
+    name        = "pr6938.exe.js",
+    entry_point = ":pr6938.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "pr6938.exe.jsoo",
+    main   = ":pr6938.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "pr6938.exe",
+    main     = ":Pr6938",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Pr6938",
+    struct        = "pr6938.ml",
+    opts          = ["-open", "Lib_printf_execlib"] + OPTS_1,
+    deps          = [":lib_printf_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+#############
+js_binary(
+    name        = "tprintf.exe.js",
+    entry_point = ":tprintf.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "tprintf.exe.jsoo",
+    main   = ":tprintf.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "tprintf.exe",
+    main     = ":Tprintf",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Tprintf",
+    struct        = "tprintf.ml",
+    opts          = ["-open", "Lib_printf_execlib"] + OPTS_1,
+    deps          = [":lib_printf_execlib"],
+    visibility    = ["//visibility:private"]
+)
+
+############################ Exec Libs ###############################
+ocaml_ns_library(
+    name = "lib_printf_execlib",
+    manifest = [
+        ":Testing"
+    ],
+    visibility = ["//visibility:private"],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Testing",
+    struct        = "testing.ml",
+    opts          = OPTS_1,
+    deps          =     visibility    = ["//visibility:private"]
+)
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "pr6534.reference",
+    srcs  = [
+        ":pr6534.reference",
+        ":pr6534.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :pr6534.reference)`",
+        "`realpath $(location :pr6534.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "pr6938.reference",
+    srcs  = [
+        ":pr6938.reference",
+        ":pr6938.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :pr6938.reference)`",
+        "`realpath $(location :pr6938.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "tprintf.reference",
+    srcs  = [
+        ":tprintf.reference",
+        ":tprintf.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :tprintf.reference)`",
+        "`realpath $(location :tprintf.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

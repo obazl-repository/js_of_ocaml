@@ -1,0 +1,111 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "@ocaml//num/core"
+]
+
+DEPS_2 = [
+    "//lib/js_of_ocaml:js_of_ocaml",
+    "@ocaml//num/core",
+    "@ocaml//unix"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "main.exe",
+    main     = ":Main",
+    visibility = ["//visibility:public"],
+    target_compatible_with = ["@ocaml//host/target:vm?"]
+)
+
+ocaml_module(
+    name          = "Main",
+    struct        = "main.ml",
+    deps          = DEPS_1,
+)
+
+ocaml_binary(
+    name     = "unix.exe",
+    main     = ":Unix",
+    visibility = ["//visibility:public"],
+    target_compatible_with = ["@ocaml//host/target:vm?"]
+)
+
+ocaml_module(
+    name          = "Unix",
+    struct        = "unix.ml",
+    deps          = DEPS_2,
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "main.output"
+    ],
+    name  = "__main.output__",
+    srcs  = [
+        ":main.exe"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "check-runtime",
+        "`realpath $(location :main.exe)`",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+        "unix-unix.output"
+    ],
+    name  = "__unix-unix.output__",
+    srcs  = [
+        ":unix.exe"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "check-runtime",
+        "`realpath $(location :unix.exe)`",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+        "unix-win32.output"
+    ],
+    name  = "__unix-win32.output__",
+    srcs  = [
+        ":unix.exe"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "check-runtime",
+        "`realpath $(location :unix.exe)`",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+

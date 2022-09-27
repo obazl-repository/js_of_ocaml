@@ -1,0 +1,65 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "bswap.exe.js",
+    entry_point = ":bswap.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "bswap.exe.jsoo",
+    main   = ":bswap.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "bswap.exe",
+    main     = ":Bswap",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Bswap",
+    struct        = "bswap.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "bswap.reference",
+    srcs  = [
+        ":bswap.reference",
+        ":bswap.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :bswap.reference)`",
+        "`realpath $(location :bswap.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

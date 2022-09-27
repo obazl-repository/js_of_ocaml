@@ -1,0 +1,237 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "bigarrays.exe.js",
+    entry_point = ":bigarrays.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "bigarrays.exe.jsoo",
+    main   = ":bigarrays.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "bigarrays.exe",
+    main     = ":Bigarrays",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Bigarrays",
+    struct        = "bigarrays.ml",
+)
+
+#############
+js_binary(
+    name        = "change_layout.exe.js",
+    entry_point = ":change_layout.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "change_layout.exe.jsoo",
+    main   = ":change_layout.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "change_layout.exe",
+    main     = ":Change_layout",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Change_layout",
+    struct        = "change_layout.ml",
+)
+
+#############
+js_binary(
+    name        = "fftba.exe.js",
+    entry_point = ":fftba.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "fftba.exe.jsoo",
+    main   = ":fftba.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "fftba.exe",
+    main     = ":Fftba",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Fftba",
+    struct        = "fftba.ml",
+)
+
+#############
+js_binary(
+    name        = "pr5115.exe.js",
+    entry_point = ":pr5115.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "pr5115.exe.jsoo",
+    main   = ":pr5115.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "pr5115.exe",
+    main     = ":Pr5115",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Pr5115",
+    struct        = "pr5115.ml",
+)
+
+#############
+js_binary(
+    name        = "weak_bigarray.exe.js",
+    entry_point = ":weak_bigarray.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "weak_bigarray.exe.jsoo",
+    main   = ":weak_bigarray.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "weak_bigarray.exe",
+    main     = ":Weak_bigarray",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Weak_bigarray",
+    struct        = "weak_bigarray.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "bigarrays.reference",
+    srcs  = [
+        ":bigarrays.reference",
+        ":bigarrays.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :bigarrays.reference)`",
+        "`realpath $(location :bigarrays.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "change_layout.reference",
+    srcs  = [
+        ":change_layout.reference",
+        ":change_layout.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :change_layout.reference)`",
+        "`realpath $(location :change_layout.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "fftba.reference",
+    srcs  = [
+        ":fftba.reference",
+        ":fftba.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :fftba.reference)`",
+        "`realpath $(location :fftba.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "pr5115.reference",
+    srcs  = [
+        ":pr5115.reference",
+        ":pr5115.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :pr5115.reference)`",
+        "`realpath $(location :pr5115.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "weak_bigarray.reference",
+    srcs  = [
+        ":weak_bigarray.reference",
+        ":weak_bigarray.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :weak_bigarray.reference)`",
+        "`realpath $(location :weak_bigarray.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

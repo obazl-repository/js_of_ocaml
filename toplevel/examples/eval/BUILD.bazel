@@ -1,0 +1,81 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "//compiler/lib:js_of_ocaml_compiler",
+    "//toplevel/lib:js_of_ocaml_toplevel"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "eval.exe",
+    main     = ":Eval",
+    visibility = ["//visibility:public"],
+    target_compatible_with = ["@ocaml//host/target:vm?"]
+)
+
+ocaml_module(
+    name          = "Eval",
+    struct        = "eval.ml",
+    deps          = DEPS_1,
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "export.txt"
+    ],
+    name  = "__export.txt__",
+    srcs  = [
+        "//toplevel/examples/eval:eval.exe",
+        "@ocaml//lib/stdlib:stdlib"
+    ],
+    cmd   = " ".join([
+        "$(execpath //toplevel/bin:jsoo_listunits.exe)",
+        "-o",
+        "$(location export.txt)",
+        "`realpath $(location @ocaml//lib/stdlib:stdlib)`",
+    ]),
+    exec_tools = [
+        "//toplevel/bin:jsoo_listunits.exe"
+    ]
+)
+########
+genrule(
+    outs  = [
+        "eval.js"
+    ],
+    name  = "__eval.js__",
+    srcs  = [
+        ":export.txt",
+        ":eval.exe"
+    ],
+    cmd   = " ".join([
+        "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
+        "--export",
+        "`realpath $(location :export.txt)`",
+        "--toplevel",
+        "--pretty",
+        "+toplevel.js",
+        "+dynlink.js",
+        "`realpath $(location :eval.exe)`",
+        "-o",
+        "$(location eval.js)",
+    ]),
+    exec_tools = [
+        "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
+    ]
+)
+

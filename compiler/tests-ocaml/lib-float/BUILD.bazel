@@ -1,0 +1,65 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "test.exe.js",
+    entry_point = ":test.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "test.exe.jsoo",
+    main   = ":test.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "test.exe",
+    main     = ":Test",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Test",
+    struct        = "test.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+
+    ],
+    name  = "test.reference",
+    srcs  = [
+        ":test.reference",
+        ":test.referencejs"
+    ],
+    cmd   = " ".join([
+        "$(execpath diff)",
+        "`realpath $(location :test.reference)`",
+        "`realpath $(location :test.referencejs)`",
+    ]),
+    exec_tools = [
+        "diff"
+    ]
+)
+

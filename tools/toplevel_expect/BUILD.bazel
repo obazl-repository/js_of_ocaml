@@ -1,0 +1,64 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_ns_archive",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "@ocaml//compiler-libs/common",
+    "@ocaml//compiler-libs/toplevel"
+]
+
+#############################
+####  Aggregate Targets  ####
+
+#################
+ocaml_ns_archive(
+    name       = "toplevel_expect_test",
+    ns         = "toplevel_expect_test",
+    manifest = [
+        ":Toplevel_expect_test"
+    ],
+)
+
+######################## Modules & Signatures ########################
+
+ocaml_module(
+    name          = "Toplevel_expect_test",
+    struct        = "toplevel_expect_test.ml",
+    deps          = DEPS_1,
+)
+
+
+############################# Rules ##################################
+
+########
+genrule(
+    outs  = [
+        "toplevel_expect_test.ml"
+    ],
+    name  = "__toplevel_expect_test.ml__",
+    srcs  = [
+        ":toplevel_expect_test.ml-4.04",
+        ":toplevel_expect_test.ml-4.05",
+        ":toplevel_expect_test.ml-4.08",
+        ":toplevel_expect_test.ml-4.09",
+        ":toplevel_expect_test.ml-4.10",
+        ":toplevel_expect_test.ml-default"
+    ],
+    cmd   = " ".join([
+        "$(execpath //tools/select:select.exe)",
+        "`realpath $(location :toplevel_expect_test.ml-4.04)`",
+        "`realpath $(location :toplevel_expect_test.ml-4.05)`",
+        "`realpath $(location :toplevel_expect_test.ml-4.08)`",
+        "`realpath $(location :toplevel_expect_test.ml-4.09)`",
+        "`realpath $(location :toplevel_expect_test.ml-4.10)`",
+        "`realpath $(location :toplevel_expect_test.ml-default)`",
+        "> $@"
+    ]),
+    exec_tools = [
+        "//tools/select:select.exe"
+    ]
+)
+

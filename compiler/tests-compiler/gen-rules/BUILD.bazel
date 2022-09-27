@@ -1,0 +1,26 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "gen.exe",
+    main     = ":Gen",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_module(
+    name          = "Gen",
+    struct        = "gen.ml",
+)
+
+######################## Modules & Signatures ########################
+
+
+
