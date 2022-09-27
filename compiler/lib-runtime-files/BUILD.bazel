@@ -22,6 +22,7 @@ ocaml_library(
 )
 
 ######################## Modules & Signatures ########################
+
 ocaml_module(
     name          = "Files",
     struct        = "files.ml",
@@ -36,10 +37,10 @@ ocaml_module(
     ],
 )
 
-########################
-####  Rule Targets  ####
 
-################  rule  ################
+############################# Rules ##################################
+
+########
 genrule(
     outs  = [
         "files.ml"

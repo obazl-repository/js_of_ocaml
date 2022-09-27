@@ -23,16 +23,14 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+
 ocaml_module(
     name          = "All",
     struct        = "all.ml",
     deps          = DEPS_1,
     ppx           = ":ppx_1.exe",
-    ppx_args           = [
-        "-inline-test-lib",
-        "JSOO_LIB_RUNTIME_TEST"
-    ],
 )
+
 
 
 ###############

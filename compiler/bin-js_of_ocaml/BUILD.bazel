@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
      "ocaml_ns_library",
+     "ocaml_exec_module",
      "ocaml_module",
 )
 
@@ -26,8 +27,17 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
+ocaml_exec_module(
+    name          = "Js_of_ocaml",
+    struct        = "js_of_ocaml.ml",
+    sig           = "js_of_ocaml.mli",
+    opts          = ["-open", "Bin_js_of_ocaml_execlib"] + OPTS_1,
+    deps          = [":bin_js_of_ocaml_execlib"],
+)
+
+############################ Exec Libs ###############################
 ocaml_ns_library(
-    name = "Js_of_ocaml_execlib",
+    name = "bin_js_of_ocaml_execlib",
     manifest = [
         ":Build_fs",
         ":Build_runtime",
@@ -93,14 +103,6 @@ ocaml_module(
 )
 
 ocaml_module(
-    name          = "Js_of_ocaml",
-    struct        = "js_of_ocaml.ml",
-    sig           = "js_of_ocaml.mli",
-    opts          = ["-open", "Js_of_ocaml_execlib"] + OPTS_1,
-    deps          = [":Js_of_ocaml_execlib"],
-)
-
-ocaml_module(
     name          = "Link",
     struct        = "link.ml",
     sig           = "link.mli",
@@ -120,6 +122,7 @@ ocaml_module(
     ],
 )
 
+
 ocaml_module(
     name          = "Check_runtime",
     struct        = "check_runtime.ml",
@@ -127,6 +130,7 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Info"
     ],
+    visibility    = ["//visibility:private"]
 )
 
 ocaml_module(
@@ -140,12 +144,13 @@ ocaml_module(
         "//bzl/import:js_of_ocaml-compiler.findlib-support?": ["//compiler/lib-findlib-support:jsoo_findlib_support"],
         "//conditions:default": []
     }),  ## 
+    visibility    = ["//visibility:private"]
 )
 
-########################
-####  Rule Targets  ####
 
-################  rule  ################
+############################# Rules ##################################
+
+########
 genrule(
     outs  = [
         "js_of_ocaml.1"
@@ -160,7 +165,7 @@ genrule(
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
         "js_of_ocaml-link.1"
@@ -176,7 +181,7 @@ genrule(
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
         "js_of_ocaml-build-fs.1"
@@ -192,7 +197,7 @@ genrule(
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
         "js_of_ocaml-build-runtime.1"
@@ -208,7 +213,7 @@ genrule(
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
         "runtime.js"

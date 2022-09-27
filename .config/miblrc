@@ -16,14 +16,15 @@ grammar=1.0.0-BETA  ;; version number of config grammar, not obazl program
 ;; bazel-bin, bazel-out etc. - bazel symlinks
 ;; hidden files and dirs (.git/, .github/, .merlin, etc.)
 
-exclude = bzl
+exclude = bzl  ;; bazel code only
 
-exclude = api
-exclude = benchmarks
+exclude = api  ;; empty dunefile
+exclude = runtime  ;; requires custom code
+exclude = tools/version  ;; hand-coded translation of tuareg dunefile
+
+
+;; exclude = benchmarks
 ;; these two are hand-rolled, always exclude
-
-exclude = tools/version
-exclude = runtime
 
 ;; exclude = compiler
 ;; exclude = compiler/bin-js_of_ocaml
@@ -42,14 +43,15 @@ exclude = runtime
 ;; exclude = compiler/tests-compiler/util
 
 ;; exclude  = compiler/tests-dynlink
-exclude = compiler/tests-io  ;; WIP
+exclude = compiler/tests-io  ;; WIP, bad dunefile (unescaped '\' in string literal)
 ;; exclude = compiler/tests-jsoo
-exclude = compiler/tests-jsoo/bin  ;; WIP
+exclude = compiler/tests-jsoo/bin  ;; WIP - unimplemented 'with-accepted-exit-codes' field
 
-exclude = compiler/tests-num
+;; exclude = compiler/tests-num
 ;;; exclude = compiler/tests-ocaml
 ;; exclude = compiler/tests-re
 exclude = examples
+exclude = examples/boulderdash
 
 ;; exclude = lib
 ;; exclude = lib/deriving_json

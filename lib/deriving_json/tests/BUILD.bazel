@@ -25,16 +25,14 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+
 ocaml_module(
     name          = "Json_convert",
     struct        = "json_convert.ml",
     deps          = DEPS_1,
     ppx           = ":ppx_1.exe",
-    ppx_args           = [
-        "-inline-test-lib",
-        "DERIVING_EXPECT_TESTS"
-    ],
 )
+
 
 
 ###############

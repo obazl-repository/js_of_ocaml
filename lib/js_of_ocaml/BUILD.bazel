@@ -371,6 +371,7 @@ ocaml_module(
     ppx           = ":ppx_1.exe",
 )
 
+
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
@@ -420,6 +421,7 @@ ocaml_module(
 )
 
 
+
 ###############
 ppx_executable(
     name    = "ppx_1.exe",
@@ -446,10 +448,9 @@ genrule(
         "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
     ])
 )
-########################
-####  Rule Targets  ####
+############################# Rules ##################################
 
-################  rule  ################
+########
 genrule(
     outs  = [
         "js_of_ocaml_stubs.c"

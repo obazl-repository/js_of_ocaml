@@ -24,6 +24,7 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+
 ocaml_module(
     name          = "Ppx_optcomp_light",
     struct        = "ppx_optcomp_light.ml",
@@ -37,5 +38,6 @@ ocaml_module(
     struct        = "properties.ml",
     deps          = DEPS_1,
 )
+
 
 

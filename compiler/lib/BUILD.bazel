@@ -888,6 +888,7 @@ ocaml_module(
     ppx           = ":ppx_1.exe",
 )
 
+
 ocaml_module(
     name          = "Constant",
     struct        = "constant.ml",
@@ -905,6 +906,7 @@ ocaml_module(
     deps          = DEPS_1,
     ppx           = ":ppx_1.exe",
 )
+
 
 ########################
 ####  File Generators  ####
@@ -984,8 +986,7 @@ genrule(
         "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
     ])
 )
-########################
-####  Rule Targets  ####
+############################# Rules ##################################
 
 ######
 copy_file(

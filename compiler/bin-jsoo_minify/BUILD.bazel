@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
      "ocaml_ns_library",
+     "ocaml_exec_module",
      "ocaml_module",
 )
 
@@ -25,8 +26,17 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
+ocaml_exec_module(
+    name          = "Jsoo_minify",
+    struct        = "jsoo_minify.ml",
+    sig           = "jsoo_minify.mli",
+    opts          = ["-open", "Bin_jsoo_minify_execlib"] + OPTS_1,
+    deps          = [":bin_jsoo_minify_execlib"],
+)
+
+############################ Exec Libs ###############################
 ocaml_ns_library(
-    name = "Jsoo_minify_execlib",
+    name = "bin_jsoo_minify_execlib",
     manifest = [
         ":Cmd_arg"
     ],
@@ -42,18 +52,11 @@ ocaml_module(
     deps          = DEPS_1,
 )
 
-ocaml_module(
-    name          = "Jsoo_minify",
-    struct        = "jsoo_minify.ml",
-    sig           = "jsoo_minify.mli",
-    opts          = ["-open", "Jsoo_minify_execlib"] + OPTS_1,
-    deps          = [":Jsoo_minify_execlib"],
-)
 
-########################
-####  Rule Targets  ####
 
-################  rule  ################
+############################# Rules ##################################
+
+########
 genrule(
     outs  = [
         "jsoo_minify.1"

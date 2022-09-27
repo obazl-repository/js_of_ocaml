@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
      "ocaml_ns_library",
+     "ocaml_exec_module",
      "ocaml_module",
 )
 
@@ -18,11 +19,13 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Gen_stubs",
     struct        = "gen_stubs.ml",
     deps          = DEPS_1,
 )
+
+######################## Modules & Signatures ########################
+
 
 

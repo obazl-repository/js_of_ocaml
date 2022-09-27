@@ -19,15 +19,16 @@ ocaml_library(
 )
 
 ######################## Modules & Signatures ########################
+
 ocaml_module(
     name          = "Jsoo_runtime",
     struct        = "jsoo_runtime.ml",
 )
 
-########################
-####  Rule Targets  ####
 
-################  rule  ################
+############################# Rules ##################################
+
+########
 genrule(
     outs  = [
         "js_of_ocaml_runtime_stubs.c"

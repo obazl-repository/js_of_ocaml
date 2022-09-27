@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
      "ocaml_ns_library",
+     "ocaml_exec_module",
      "ocaml_module",
 )
 
@@ -22,17 +23,18 @@ ocaml_binary(
     target_compatible_with = ["@ocaml//host/target:vm?"]
 )
 
-######################## Modules & Signatures ########################
 ocaml_module(
     name          = "Main",
     struct        = "main.ml",
     deps          = DEPS_1,
 )
 
-########################
-####  Rule Targets  ####
+######################## Modules & Signatures ########################
 
-################  rule  ################
+
+############################# Rules ##################################
+
+########
 genrule(
     outs  = [
         "ppx.mlt.corrected"
@@ -51,7 +53,7 @@ genrule(
         "exe:main.bc"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
         "gen.mlt.corrected"
@@ -70,12 +72,12 @@ genrule(
         "exe:main.bc"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
 
     ],
-    name  = "TEST",
+    name  = "ppx.mlt",
     cmd   = " ".join([
         "$(execpath diff)",
         "ppx.mlt",
@@ -85,12 +87,12 @@ genrule(
         "diff"
     ]
 )
-################  rule  ################
+########
 genrule(
     outs  = [
 
     ],
-    name  = "TEST",
+    name  = "gen.mlt",
     cmd   = " ".join([
         "$(execpath diff)",
         "gen.mlt",

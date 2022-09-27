@@ -10,6 +10,8 @@ This is an OBazl demonstration project.  It demonstrates:
 ** link:https://github.com/bazelbuild/rules_closure[rules_closure] using Google's link:https://developers.google.com/closure/[Closure Tools]
 
 
+link:status.adoc[Status]
+
 == The Conversion Process
 
 Nutshell:
