@@ -1,0 +1,233 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_library",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "almabench.exe",
+    main     = ":Almabench",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Almabench",
+    struct        = "almabench.ml",
+)
+
+ocaml_binary(
+    name     = "bdd.exe",
+    main     = ":Bdd",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Bdd",
+    struct        = "bdd.ml",
+)
+
+ocaml_binary(
+    name     = "binary_trees.exe",
+    main     = ":Binary_trees",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Binary_trees",
+    struct        = "binary_trees.ml",
+)
+
+ocaml_binary(
+    name     = "boyer.exe",
+    main     = ":Boyer",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Boyer",
+    struct        = "boyer.ml",
+)
+
+ocaml_binary(
+    name     = "boyer_no_exc.exe",
+    main     = ":Boyer_no_exc",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Boyer_no_exc",
+    struct        = "boyer_no_exc.ml",
+)
+
+ocaml_binary(
+    name     = "fannkuch_redux_2.exe",
+    main     = ":Fannkuch_redux_2",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Fannkuch_redux_2",
+    struct        = "fannkuch_redux_2.ml",
+)
+
+ocaml_binary(
+    name     = "fannkuch_redux.exe",
+    main     = ":Fannkuch_redux",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Fannkuch_redux",
+    struct        = "fannkuch_redux.ml",
+)
+
+ocaml_binary(
+    name     = "fft.exe",
+    main     = ":Fft",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Fft",
+    struct        = "fft.ml",
+)
+
+ocaml_binary(
+    name     = "fib.exe",
+    main     = ":Fib",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Fib",
+    struct        = "fib.ml",
+)
+
+ocaml_binary(
+    name     = "hamming.exe",
+    main     = ":Hamming",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Hamming",
+    struct        = "hamming.ml",
+)
+
+ocaml_binary(
+    name     = "kb.exe",
+    main     = ":Kb",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Kb",
+    struct        = "kb.ml",
+)
+
+ocaml_binary(
+    name     = "kb_no_exc.exe",
+    main     = ":Kb_no_exc",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Kb_no_exc",
+    struct        = "kb_no_exc.ml",
+)
+
+ocaml_binary(
+    name     = "loop.exe",
+    main     = ":Loop",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Loop",
+    struct        = "loop.ml",
+)
+
+ocaml_binary(
+    name     = "nucleic.exe",
+    main     = ":Nucleic",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Nucleic",
+    struct        = "nucleic.ml",
+)
+
+ocaml_binary(
+    name     = "quicksort.exe",
+    main     = ":Quicksort",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Quicksort",
+    struct        = "quicksort.ml",
+)
+
+ocaml_binary(
+    name     = "raytrace.exe",
+    main     = ":Raytrace",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Raytrace",
+    struct        = "raytrace.ml",
+)
+
+ocaml_binary(
+    name     = "soli.exe",
+    main     = ":Soli",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Soli",
+    struct        = "soli.ml",
+)
+
+ocaml_binary(
+    name     = "splay.exe",
+    main     = ":Splay",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Splay",
+    struct        = "splay.ml",
+)
+
+ocaml_binary(
+    name     = "takc.exe",
+    main     = ":Takc",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Takc",
+    struct        = "takc.ml",
+)
+
+ocaml_binary(
+    name     = "taku.exe",
+    main     = ":Taku",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Taku",
+    struct        = "taku.ml",
+)
+
+######################## Modules & Signatures ########################

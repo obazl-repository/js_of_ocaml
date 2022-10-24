@@ -1,11 +1,19 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
 )
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
 
 DEPS_1 = [
     "//lib/js_of_ocaml:js_of_ocaml",
@@ -22,10 +30,10 @@ ocaml_binary(
     name     = "test_toplevel.exe",
     main     = ":Test_toplevel",
     visibility = ["//visibility:public"],
-    target_compatible_with = ["@ocaml//host/target:vm?"]
+    target_compatible_with = ["@ocaml//platforms:vm?"]
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Test_toplevel",
     struct        = "test_toplevel.ml",
     opts          = OPTS_1,
@@ -33,8 +41,6 @@ ocaml_module(
 )
 
 ######################## Modules & Signatures ########################
-
-
 ############################# Rules ##################################
 
 ########
@@ -44,18 +50,21 @@ genrule(
     ],
     name  = "__export.txt__",
     srcs  = [
-        "@ocaml//lib/stdlib:stdlib"
+        ":js_of_ocaml-toplevel",
+        ":stdlib"
     ],
     cmd   = " ".join([
         "$(execpath //toplevel/bin:jsoo_listunits.exe)",
         "-o",
         "$(location export.txt)",
-        "`realpath $(location @ocaml//lib/stdlib:stdlib)`",
+        "$(location :stdlib)",
+        "$(location :js_of_ocaml-toplevel)",
     ]),
     exec_tools = [
         "//toplevel/bin:jsoo_listunits.exe"
     ]
 )
+
 ########
 genrule(
     outs  = [
@@ -63,6 +72,9 @@ genrule(
     ],
     name  = "__test_toplevel.js__",
     srcs  = [
+        ":+dynlink.js",
+        ":+toplevel.js",
+        ":shortvar",
         ":export.txt",
         ":test_toplevel.exe"
     ],
@@ -71,13 +83,13 @@ genrule(
         "-I",
         "./",
         "--export",
-        "`realpath $(location :export.txt)`",
+        "$(location :export.txt)",
         "--toplevel",
         "--disable",
-        "shortvar",
-        "+toplevel.js",
-        "+dynlink.js",
-        "`realpath $(location :test_toplevel.exe)`",
+        "$(location :shortvar)",
+        "$(location :+toplevel.js)",
+        "$(location :+dynlink.js)",
+        "$(location :test_toplevel.exe)",
         "-o",
         "$(location test_toplevel.js)",
     ]),
@@ -85,23 +97,18 @@ genrule(
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "test_toplevel.reference",
-    srcs  = [
-        ":test_toplevel.reference",
-        ":test_toplevel.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :test_toplevel.reference)`",
-        "`realpath $(location :test_toplevel.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__test_toplevel.referencejs__",
+    tool  = ":test_toplevel.js",
+    stdout  = "test_toplevel.referencejs"
+)
+
+##########
+diff_test(
+    name  = "test_toplevel.reference.diff_test",
+    file1  = ":test_toplevel.reference",
+    file2  = ":test_toplevel.referencejs"
 )
 

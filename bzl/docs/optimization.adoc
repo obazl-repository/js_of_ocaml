@@ -1,0 +1,17 @@
+= optimization
+
+== deps
+
+no spurious deps
+
+== optimizing executables: exec-libs
+
+With Obazl we can optimize Dune's `executables` stanzas. In such
+stanzas multiple executables may depend on the same "exec-lib". We can
+build that lib just once and share it among all the executables whose
+"main" module depends on it.
+
+Concepts: exec modules are those linked directly into the executable.
+The "name" (or "names") field of a dune executable(s) marks the "main
+exec module. The other modules, upon which the exec depends, form the
+"exec lib".

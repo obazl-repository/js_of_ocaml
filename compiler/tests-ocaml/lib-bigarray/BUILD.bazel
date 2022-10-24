@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "bigarrays.exe.js",
+    name        = "bigarrays.bc.js",
     entry_point = ":bigarrays.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Bigarrays",
     struct        = "bigarrays.ml",
 )
 
 #############
 js_binary(
-    name        = "change_layout.exe.js",
+    name        = "change_layout.bc.js",
     entry_point = ":change_layout.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,14 +60,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Change_layout",
     struct        = "change_layout.ml",
 )
 
 #############
 js_binary(
-    name        = "fftba.exe.js",
+    name        = "fftba.bc.js",
     entry_point = ":fftba.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -81,14 +84,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Fftba",
     struct        = "fftba.ml",
 )
 
 #############
 js_binary(
-    name        = "pr5115.exe.js",
+    name        = "pr5115.bc.js",
     entry_point = ":pr5115.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -105,14 +108,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Pr5115",
     struct        = "pr5115.ml",
 )
 
 #############
 js_binary(
-    name        = "weak_bigarray.exe.js",
+    name        = "weak_bigarray.bc.js",
     entry_point = ":weak_bigarray.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -129,109 +132,79 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Weak_bigarray",
     struct        = "weak_bigarray.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "bigarrays.reference",
-    srcs  = [
-        ":bigarrays.reference",
-        ":bigarrays.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :bigarrays.reference)`",
-        "`realpath $(location :bigarrays.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__bigarrays.referencejs__",
+    tool  = ":bigarrays.bc.js",
+    stdout  = "bigarrays.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "change_layout.reference",
-    srcs  = [
-        ":change_layout.reference",
-        ":change_layout.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :change_layout.reference)`",
-        "`realpath $(location :change_layout.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "bigarrays.reference.diff_test",
+    file1  = ":bigarrays.reference",
+    file2  = ":bigarrays.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "fftba.reference",
-    srcs  = [
-        ":fftba.reference",
-        ":fftba.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :fftba.reference)`",
-        "`realpath $(location :fftba.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__change_layout.referencejs__",
+    tool  = ":change_layout.bc.js",
+    stdout  = "change_layout.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "pr5115.reference",
-    srcs  = [
-        ":pr5115.reference",
-        ":pr5115.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :pr5115.reference)`",
-        "`realpath $(location :pr5115.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "change_layout.reference.diff_test",
+    file1  = ":change_layout.reference",
+    file2  = ":change_layout.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "weak_bigarray.reference",
-    srcs  = [
-        ":weak_bigarray.reference",
-        ":weak_bigarray.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :weak_bigarray.reference)`",
-        "`realpath $(location :weak_bigarray.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__fftba.referencejs__",
+    tool  = ":fftba.bc.js",
+    stdout  = "fftba.referencejs"
+)
+
+##########
+diff_test(
+    name  = "fftba.reference.diff_test",
+    file1  = ":fftba.reference",
+    file2  = ":fftba.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__pr5115.referencejs__",
+    tool  = ":pr5115.bc.js",
+    stdout  = "pr5115.referencejs"
+)
+
+##########
+diff_test(
+    name  = "pr5115.reference.diff_test",
+    file1  = ":pr5115.reference",
+    file2  = ":pr5115.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__weak_bigarray.referencejs__",
+    tool  = ":weak_bigarray.bc.js",
+    stdout  = "weak_bigarray.referencejs"
+)
+
+##########
+diff_test(
+    name  = "weak_bigarray.reference.diff_test",
+    file1  = ":weak_bigarray.reference",
+    file2  = ":weak_bigarray.referencejs"
 )
 

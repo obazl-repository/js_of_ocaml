@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "testmap.exe.js",
+    name        = "testmap.bc.js",
     entry_point = ":testmap.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Testmap",
     struct        = "testmap.ml",
 )
 
 #############
 js_binary(
-    name        = "testset.exe.js",
+    name        = "testset.bc.js",
     entry_point = ":testset.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,52 +60,37 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Testset",
     struct        = "testset.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "testmap.reference",
-    srcs  = [
-        ":testmap.reference",
-        ":testmap.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :testmap.reference)`",
-        "`realpath $(location :testmap.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__testmap.referencejs__",
+    tool  = ":testmap.bc.js",
+    stdout  = "testmap.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "testset.reference",
-    srcs  = [
-        ":testset.reference",
-        ":testset.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :testset.reference)`",
-        "`realpath $(location :testset.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "testmap.reference.diff_test",
+    file1  = ":testmap.reference",
+    file2  = ":testmap.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__testset.referencejs__",
+    tool  = ":testset.bc.js",
+    stdout  = "testset.referencejs"
+)
+
+##########
+diff_test(
+    name  = "testset.reference.diff_test",
+    file1  = ":testset.reference",
+    file2  = ":testset.referencejs"
 )
 

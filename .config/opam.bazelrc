@@ -1,0 +1,1 @@
+common --override_repository=js_of_ocaml-ppx=/Users/gar/obazl-repository/js_of_ocaml/ppx/ppx_js

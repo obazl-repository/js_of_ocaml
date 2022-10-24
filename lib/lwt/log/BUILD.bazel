@@ -1,22 +1,24 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
 )
 
 DEPS_1 = [
     "//lib/js_of_ocaml:js_of_ocaml",
-    "@lwt//lib/lwt",
-    "@lwt_log//lib/core"
+    "@opam_lwt//lib/lwt",
+    "@opam_lwt_log//lib/core"
 ]
 
 #############################
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "lwt_log_js",
     ns         = "lwt_log_js",
     manifest = [
@@ -26,6 +28,7 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Lwt_log_js",
     struct        = "lwt_log_js.ml",
@@ -33,17 +36,15 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
-
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
-
 
 
 ###############
@@ -56,11 +57,11 @@ ppx_executable(
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########

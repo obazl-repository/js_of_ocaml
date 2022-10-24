@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -24,10 +25,10 @@ ocaml_binary(
     name     = "main.exe",
     main     = ":Main",
     visibility = ["//visibility:public"],
-    target_compatible_with = ["@ocaml//host/target:vm?"]
+    target_compatible_with = ["@ocaml//platforms:vm?"]
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Main",
     struct        = "main.ml",
     deps          = DEPS_1,
@@ -37,18 +38,16 @@ ocaml_binary(
     name     = "unix.exe",
     main     = ":Unix",
     visibility = ["//visibility:public"],
-    target_compatible_with = ["@ocaml//host/target:vm?"]
+    target_compatible_with = ["@ocaml//platforms:vm?"]
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Unix",
     struct        = "unix.ml",
     deps          = DEPS_2,
 )
 
 ######################## Modules & Signatures ########################
-
-
 ############################# Rules ##################################
 
 ########
@@ -58,18 +57,20 @@ genrule(
     ],
     name  = "__main.output__",
     srcs  = [
+        ":check-runtime",
         ":main.exe"
     ],
     cmd   = " ".join([
         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
-        "check-runtime",
-        "`realpath $(location :main.exe)`",
+        "$(location :check-runtime)",
+        "$(location :main.exe)",
         "> $@"
     ]),
     exec_tools = [
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
+
 ########
 genrule(
     outs  = [
@@ -77,18 +78,20 @@ genrule(
     ],
     name  = "__unix-unix.output__",
     srcs  = [
+        ":check-runtime",
         ":unix.exe"
     ],
     cmd   = " ".join([
         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
-        "check-runtime",
-        "`realpath $(location :unix.exe)`",
+        "$(location :check-runtime)",
+        "$(location :unix.exe)",
         "> $@"
     ]),
     exec_tools = [
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
+
 ########
 genrule(
     outs  = [
@@ -96,12 +99,13 @@ genrule(
     ],
     name  = "__unix-win32.output__",
     srcs  = [
+        ":check-runtime",
         ":unix.exe"
     ],
     cmd   = " ".join([
         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
-        "check-runtime",
-        "`realpath $(location :unix.exe)`",
+        "$(location :check-runtime)",
+        "$(location :unix.exe)",
         "> $@"
     ]),
     exec_tools = [

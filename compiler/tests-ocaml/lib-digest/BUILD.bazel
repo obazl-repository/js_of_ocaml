@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "md5.exe.js",
+    name        = "md5.bc.js",
     entry_point = ":md5.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,33 +36,23 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Md5",
     struct        = "md5.ml",
 )
 
 ######################## Modules & Signatures ########################
+##############
+js_run_binary(
+    name  = "__md5.referencejs__",
+    tool  = ":md5.bc.js",
+    stdout  = "md5.referencejs"
+)
 
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "md5.reference",
-    srcs  = [
-        ":md5.reference",
-        ":md5.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :md5.reference)`",
-        "`realpath $(location :md5.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "md5.reference.diff_test",
+    file1  = ":md5.reference",
+    file2  = ":md5.referencejs"
 )
 

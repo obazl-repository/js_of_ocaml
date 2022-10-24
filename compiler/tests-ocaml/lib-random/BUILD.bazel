@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "selfinit.exe.js",
+    name        = "selfinit.bc.js",
     entry_point = ":selfinit.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,60 +36,23 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Selfinit",
     struct        = "selfinit.ml",
-X4    opts          = ["-open", "Selfinit_execlib"],
-    deps          = [":lib_random_execlib"],
-    visibility    = ["//visibility:private"]
-)
-
-############################ Exec Libs ###############################
-ocaml_ns_library(
-    name = "lib_random_execlib",
-    manifest = [
-        ":Defaultinit",
-        ":Testvectors"
-    ],
-    visibility = ["//visibility:private"],
 )
 
 ######################## Modules & Signatures ########################
-
-ocaml_module(
-    name          = "Defaultinit",
-    struct        = "defaultinit.ml",
-X5    opts          = ["-open", "#f_execlib"],
-    deps          =     visibility    = ["//visibility:private"]
+##############
+js_run_binary(
+    name  = "__selfinit.referencejs__",
+    tool  = ":selfinit.bc.js",
+    stdout  = "selfinit.referencejs"
 )
 
-ocaml_module(
-    name          = "Testvectors",
-    struct        = "testvectors.ml",
-X5    opts          = ["-open", "#f_execlib"],
-    deps          =     visibility    = ["//visibility:private"]
-)
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "selfinit.reference",
-    srcs  = [
-        ":selfinit.reference",
-        ":selfinit.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :selfinit.reference)`",
-        "`realpath $(location :selfinit.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "selfinit.reference.diff_test",
+    file1  = ":selfinit.reference",
+    file2  = ":selfinit.referencejs"
 )
 

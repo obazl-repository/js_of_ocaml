@@ -8,6 +8,7 @@ A test file for the Format module.
 
 *)
 
+(* open Foo;; *)
 open Testing;;
 open Format;;
 

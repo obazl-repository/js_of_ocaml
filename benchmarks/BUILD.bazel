@@ -1,0 +1,49 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_library",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+DEPS_1 = [
+    "@ocaml//unix"
+]
+
+##############################
+####  Executable Targets  ####
+ocaml_binary(
+    name     = "report.exe",
+    main     = ":Report",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Report",
+    struct        = "report.ml",
+    deps          = [":#f_execlib"]
+,
+)
+
+ocaml_binary(
+    name     = "run.exe",
+    main     = ":Run",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Run",
+    struct        = "run.ml",
+    deps          = [":#f_execlib"]
+,
+)
+
+######################## Modules & Signatures ########################
+ocaml_module(
+    name          = "Common",
+    struct        = "common.ml",
+    deps          = DEPS_1,
+)
+

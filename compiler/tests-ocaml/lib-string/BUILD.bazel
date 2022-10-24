@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "test_string.exe.js",
+    name        = "test_string.bc.js",
     entry_point = ":test_string.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Test_string",
     struct        = "test_string.ml",
 )
 
 #############
 js_binary(
-    name        = "binary.exe.js",
+    name        = "binary.bc.js",
     entry_point = ":binary.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,33 +60,30 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Binary",
     struct        = "binary.ml",
 )
 
 ######################## Modules & Signatures ########################
+##############
+js_run_binary(
+    name  = "__test_string.referencejs__",
+    tool  = ":test_string.bc.js",
+    stdout  = "test_string.referencejs"
+)
 
+##########
+diff_test(
+    name  = "test_string.reference.diff_test",
+    file1  = ":test_string.reference",
+    file2  = ":test_string.referencejs"
+)
 
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "test_string.reference",
-    srcs  = [
-        ":test_string.reference",
-        ":test_string.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :test_string.reference)`",
-        "`realpath $(location :test_string.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__tools__",
+    tool  = ":binary.bc.js",
+    stdout  = "tools.stdout"
 )
 

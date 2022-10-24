@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -9,7 +10,7 @@ load("@rules_ocaml//build:rules.bzl",
 
 DEPS_1 = [
     "//ppx/ppx_js/as-lib:ppx_js",
-    "@ppxlib//lib/ppxlib"
+    "@opam_ppxlib//lib/ppxlib"
 ]
 
 ##############################
@@ -20,13 +21,10 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Main",
     struct        = "main.ml",
     deps          = DEPS_1,
 )
 
 ######################## Modules & Signatures ########################
-
-
-

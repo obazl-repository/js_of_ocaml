@@ -21,13 +21,11 @@ ocaml_library(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Ppx_js_rewriter",
     struct        = "ppx_js_rewriter.ml",
     sig           = "ppx_js_rewriter.mli",
     deps          = DEPS_1,
 )
-
-
-
 

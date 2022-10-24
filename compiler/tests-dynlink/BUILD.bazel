@@ -1,11 +1,19 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
 )
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
 
 DEPS_1 = [
     "@ocaml//dynlink",
@@ -18,22 +26,20 @@ ocaml_binary(
     name     = "main.exe",
     main     = ":Main",
     visibility = ["//visibility:public"],
-    target_compatible_with = ["@ocaml//host/target:vm?"]
+    target_compatible_with = ["@ocaml//platforms:vm?"]
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Main",
     struct        = "main.ml",
     deps          = DEPS_1,
 )
 
 ######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Plugin",
     struct        = "plugin.ml",
 )
-
 
 ############################# Rules ##################################
 
@@ -44,40 +50,41 @@ genrule(
     ],
     name  = "__main.js__",
     srcs  = [
+        ":+toplevel.js",
+        ":+dynlink.js",
         ":plugin.cmo",
         ":main.exe"
     ],
     cmd   = " ".join([
         "$(execpath //compiler/bin-js_of_ocaml:js_of_ocaml.exe)",
         "--dynlink",
-        "+dynlink.js",
+        "$(location :+dynlink.js)",
         "--toplevel",
-        "+toplevel.js",
+        "$(location :+toplevel.js)",
         "-I",
         "./",
         "--file",
-        "`realpath $(location :plugin.cmo)`",
+        "$(location :plugin.cmo)",
         "-o",
         "$(location main.js)",
-        "`realpath $(location :main.exe)`",
+        "$(location :main.exe)",
     ]),
     exec_tools = [
         "//compiler/bin-js_of_ocaml:js_of_ocaml.exe"
     ]
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "main.out.expected",
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "main.out.expected",
-        "main.out",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__main.out__",
+    tool  = ":main.js",
+    stdout  = "main.out"
+)
+
+##########
+diff_test(
+    name  = "main.out.diff_test",
+    file1  = ":main.out",
+    file2  = ":main.out.expected"
 )
 

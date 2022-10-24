@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "bswap.exe.js",
+    name        = "bswap.bc.js",
     entry_point = ":bswap.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,33 +36,23 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Bswap",
     struct        = "bswap.ml",
 )
 
 ######################## Modules & Signatures ########################
+##############
+js_run_binary(
+    name  = "__bswap.referencejs__",
+    tool  = ":bswap.bc.js",
+    stdout  = "bswap.referencejs"
+)
 
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "bswap.reference",
-    srcs  = [
-        ":bswap.reference",
-        ":bswap.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :bswap.reference)`",
-        "`realpath $(location :bswap.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "bswap.reference.diff_test",
+    file1  = ":bswap.reference",
+    file2  = ":bswap.referencejs"
 )
 

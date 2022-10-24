@@ -13,14 +13,14 @@ def _git_version_impl(ctx):
 
             "cat {f} | while read -r key value; do".format(f=ctx.info_file.path),
             "    if [[ $key == STABLE_GIT_VERSION ]]; then",
-            "        FOUND=1",
+            # "        FOUND=1",
             "        echo $value > {f}".format(f = ctx.outputs.out.path),
             "    fi",
             "done;",
-            "if [[ $FOUND = 0 ]]",
-            "then",
-            "    touch {f}".format(f = ctx.outputs.out.path),
-            "fi"
+            # "if [[ $FOUND == 0 ]]",
+            # "then",
+            "touch {f}".format(f = ctx.outputs.out.path),
+            # "fi"
         ]),
     )
 

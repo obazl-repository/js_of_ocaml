@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "recursive_module_init.exe.js",
+    name        = "recursive_module_init.bc.js",
     entry_point = ":recursive_module_init.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,33 +36,23 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Recursive_module_init",
     struct        = "recursive_module_init.ml",
 )
 
 ######################## Modules & Signatures ########################
+##############
+js_run_binary(
+    name  = "__recursive_module_init.referencejs__",
+    tool  = ":recursive_module_init.bc.js",
+    stdout  = "recursive_module_init.referencejs"
+)
 
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "recursive_module_init.reference",
-    srcs  = [
-        ":recursive_module_init.reference",
-        ":recursive_module_init.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :recursive_module_init.reference)`",
-        "`realpath $(location :recursive_module_init.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "recursive_module_init.reference.diff_test",
+    file1  = ":recursive_module_init.reference",
+    file2  = ":recursive_module_init.referencejs"
 )
 

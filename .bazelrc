@@ -1,8 +1,3 @@
-build --color=yes
-
-build --workspace_status_command=tools/version/bzl_workspace_status_command.sh
-build --embed_label="'git describe --always --dirty'"
-
 # build --platforms=@ocaml//host/target:vm
 
 # toolchain selection: vm (bytecode), sys (nativecode) E.g. to compile
@@ -13,21 +8,24 @@ build --embed_label="'git describe --always --dirty'"
 
 # default platform is sys for both buildhost and targethost
 
-## vm targethost, any buildhost:
-build:vm --platforms=@ocaml//host/target:vm
+build:vm --platforms=@ocaml//platforms:vm
 
-# explicitly sys to sys (this is the default) :
-build:syssys --host_platform=@ocaml//host/build:sys
-build:syssys --platforms=@ocaml//host/target:sys
+build:vmvm --host_platform=@ocaml//platforms:vm
+build:vmvm --platforms=@ocaml//platforms:vm
 
-# explicitly vm to vm:
-build:vmvm --host_platform=@ocaml//host/build:vm
-build:vmvm --platforms=@ocaml//host/target:vm
+build:sysvm --host_platform=@ocaml//platforms:sys
+build:sysvm --platforms=@ocaml//platforms:vm
 
-# cross-builds:
-## default is always sys, for both build and target hosts
-build:sysvm --platforms=@ocaml//host/target:vm
-build:vmsys --host_platform=@ocaml//host/build:vm
+build:vmsys --host_platform=@ocaml//platforms:vm
+build:vmsys --platforms=@ocaml//platforms:sys
+
+build:syssys --host_platform=@ocaml//platforms:sys
+build:syssys --platforms=@ocaml//platforms:sys
+
+build --color=yes
+
+build --workspace_status_command=tools/version/bzl_workspace_status_command.sh
+build --embed_label="'git describe --always --dirty'"
 
 try-import .config/dev.bazelrc
 try-import .config/opam.bazelrc

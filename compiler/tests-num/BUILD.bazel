@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -45,17 +48,17 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Main",
     struct        = "main.ml",
     opts          = ["-open", "Tests_num_execlib"] + OPTS_1,
-    deps          = [":tests_num_execlib"],
+    deps          = [":Tests_num_execlib"],
     visibility    = ["//visibility:private"]
 )
 
 ############################ Exec Libs ###############################
 ocaml_ns_library(
-    name = "tests_num_execlib",
+    name = "Tests_num_execlib",
     manifest = [
         ":Test",
         ":Test_big_ints",
@@ -68,11 +71,10 @@ ocaml_ns_library(
 )
 
 ######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Test",
     struct        = "test.ml",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X3
     deps          = DEPS_1,
     visibility    = ["//visibility:private"]
 )
@@ -80,7 +82,7 @@ ocaml_module(
 ocaml_module(
     name          = "Test_big_ints",
     struct        = "test_big_ints.ml",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X3
     deps          = DEPS_1 + [
         ":Test"
     ],
@@ -90,7 +92,7 @@ ocaml_module(
 ocaml_module(
     name          = "Test_io",
     struct        = "test_io.ml",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X3
     deps          = DEPS_1 + [
         ":Test"
     ],
@@ -100,7 +102,7 @@ ocaml_module(
 ocaml_module(
     name          = "Test_nats",
     struct        = "test_nats.ml",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X3
     deps          = DEPS_1 + [
         ":Test"
     ],
@@ -110,7 +112,7 @@ ocaml_module(
 ocaml_module(
     name          = "Test_nums",
     struct        = "test_nums.ml",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X3
     deps          = DEPS_1 + [
         ":Test"
     ],
@@ -120,13 +122,19 @@ ocaml_module(
 ocaml_module(
     name          = "Test_ratios",
     struct        = "test_ratios.ml",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X3
     deps          = DEPS_1 + [
         ":Test"
     ],
     visibility    = ["//visibility:private"]
 )
 
+##############
+js_run_binary(
+    name  = "__main.referencejs__",
+    tool  = ":main.bc.js",
+    stdout  = "main.referencejs"
+)
 
 ############################# Rules ##################################
 
@@ -137,7 +145,6 @@ genrule(
     ],
     name  = "__main.reference__",
     cmd   = " ".join([
-,
         "$(execpath //ppx/ppx_js/tests:main.exe)",
 
         "> $@"
@@ -146,23 +153,11 @@ genrule(
         "//ppx/ppx_js/tests:main.exe"
     ]
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "main.reference",
-    srcs  = [
-        ":main.reference",
-        ":main.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :main.reference)`",
-        "`realpath $(location :main.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "main.reference.diff_test",
+    file1  = ":main.reference",
+    file2  = ":main.referencejs"
 )
 

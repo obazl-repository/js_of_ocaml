@@ -1,7 +1,5 @@
 package(default_visibility = ["//visibility:public"])
 
-
-
 ############################# Rules ##################################
 
 ########
@@ -16,8 +14,8 @@ genrule(
     ],
     cmd   = " ".join([
         "$(execpath //tools/version/gen:gen.exe)",
-        "`realpath $(location :VERSION)`",
-        "`realpath $(location //tools/version:GIT-VERSION)`",
+        "$(location :VERSION)",
+        "$(location //tools/version:GIT-VERSION)",
         "> $@"
     ]),
     exec_tools = [

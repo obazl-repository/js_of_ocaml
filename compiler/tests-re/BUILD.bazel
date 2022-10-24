@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -14,14 +15,14 @@ load("@aspect_rules_js//js:defs.bzl",
 
 DEPS_1 = [
     "@ocaml//str",
-    "@re//lib/re"
+    "@opam_re//lib/re"
 ]
 
 ##############################
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "test_str.exe.js",
+    name        = "test_str.bc.js",
     entry_point = ":test_str.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -38,13 +39,17 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Test_str",
     struct        = "test_str.ml",
     deps          = DEPS_1,
 )
 
 ######################## Modules & Signatures ########################
-
-
+##############
+js_run_binary(
+    name  = "__tools__",
+    tool  = ":test_str.bc.js",
+    stdout  = "tools.stdout"
+)
 

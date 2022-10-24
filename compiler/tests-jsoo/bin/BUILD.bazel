@@ -1,0 +1,162 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
+load("@rules_ocaml//build:rules.bzl",
+     "ocaml_binary",
+     "ocaml_library",
+     "ocaml_ns_library",
+     "ocaml_exec_module",
+     "ocaml_module",
+)
+
+load("@rules_jsoo//build:rules.bzl", "jsoo_binary", "jsoo_library")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
+
+##############################
+####  Executable Targets  ####
+#############
+js_binary(
+    name        = "error1.bc.js",
+    entry_point = ":error1.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "error1.exe.jsoo",
+    main   = ":error1.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "error1.exe",
+    main     = ":Error1",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Error1",
+    struct        = "error1.ml",
+)
+
+#############
+js_binary(
+    name        = "error2.bc.js",
+    entry_point = ":error2.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "error2.exe.jsoo",
+    main   = ":error2.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "error2.exe",
+    main     = ":Error2",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Error2",
+    struct        = "error2.ml",
+)
+
+#############
+js_binary(
+    name        = "error3.bc.js",
+    entry_point = ":error3.exe.jsoo",
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_binary(
+    name     = "error3.exe.jsoo",
+    main   = ":error3.exe",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_binary(
+    name     = "error3.exe",
+    main     = ":Error3",
+    visibility = ["//visibility:public"],
+)
+
+ocaml_exec_module(
+    name          = "Error3",
+    struct        = "error3.ml",
+)
+
+######################## Modules & Signatures ########################
+##############
+js_run_binary(
+    name  = "__error1.actual__",
+    tool  = ":error1.bc.js",
+    stdout  = "error1.actual"
+)
+
+##########
+diff_test(
+    name  = "error1.actual.diff_test",
+    file1  = ":error1.actual",
+    file2  = ":error1.expected"
+)
+
+##############
+js_run_binary(
+    name  = "__error1-unregister.actual__",
+    tool  = ":error1.bc.js",
+    stdout  = "error1-unregister.actual"
+)
+
+##########
+diff_test(
+    name  = "error1-unregister.actual.diff_test",
+    file1  = ":error1-unregister.actual",
+    file2  = ":error1-unregister.expected"
+)
+
+##############
+js_run_binary(
+    name  = "__error2.actual__",
+    tool  = ":error2.bc.js",
+    stdout  = "error2.actual"
+)
+
+##########
+diff_test(
+    name  = "error2.actual.diff_test",
+    file1  = ":error2.actual",
+    file2  = ":error2.expected"
+)
+
+##############
+js_run_binary(
+    name  = "__error2-unregister.actual__",
+    tool  = ":error2.bc.js",
+    stdout  = "error2-unregister.actual"
+)
+
+##########
+diff_test(
+    name  = "error2-unregister.actual.diff_test",
+    file1  = ":error2-unregister.actual",
+    file2  = ":error2-unregister.expected"
+)
+
+##############
+js_run_binary(
+    name  = "__error3.actual__",
+    tool  = ":error3.bc.js",
+    stdout  = "error3.actual"
+)
+
+##############
+js_run_binary(
+    name  = "__error3-unregister.actual__",
+    tool  = ":error3.bc.js",
+    stdout  = "error3-unregister.actual"
+)
+

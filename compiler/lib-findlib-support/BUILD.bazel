@@ -11,7 +11,7 @@ JSOO_FINDLIB_SUPPORT_ARCHIVE_OPTS = [
 
 DEPS_1 = [
     "//compiler/lib:js_of_ocaml_compiler",
-    "@findlib//lib/findlib"
+    "@opam_findlib//lib/findlib"
 ]
 
 #############################
@@ -26,13 +26,11 @@ ocaml_library(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Jsoo_findlib_support",
     struct        = "jsoo_findlib_support.ml",
     sig           = "jsoo_findlib_support.mli",
     deps          = DEPS_1,
 )
-
-
-
 

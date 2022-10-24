@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "test_bytes.exe.js",
+    name        = "test_bytes.bc.js",
     entry_point = ":test_bytes.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,17 +36,17 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Test_bytes",
     struct        = "test_bytes.ml",
-X4    opts          = ["-open", "Test_bytes_execlib"],
-    deps          = [":lib_bytes_execlib"],
-    visibility    = ["//visibility:private"]
+    deps          =  [
+        ":Testing"
+    ],
 )
 
 #############
 js_binary(
-    name        = "binary.exe.js",
+    name        = "binary.bc.js",
     entry_point = ":binary.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -60,52 +63,35 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Binary",
     struct        = "binary.ml",
-X4    opts          = ["-open", "Binary_execlib"],
-    deps          = [":lib_bytes_execlib"],
-    visibility    = ["//visibility:private"]
-)
-
-############################ Exec Libs ###############################
-ocaml_ns_library(
-    name = "lib_bytes_execlib",
-    manifest = [
-        ":Testing"
-    ],
-    visibility = ["//visibility:private"],
 )
 
 ######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Testing",
     struct        = "testing.ml",
-X5    opts          = ["-open", "#f_execlib"],
-    deps          =     visibility    = ["//visibility:private"]
 )
 
+##############
+js_run_binary(
+    name  = "__test_bytes.referencejs__",
+    tool  = ":test_bytes.bc.js",
+    stdout  = "test_bytes.referencejs"
+)
 
-############################# Rules ##################################
+##########
+diff_test(
+    name  = "test_bytes.reference.diff_test",
+    file1  = ":test_bytes.reference",
+    file2  = ":test_bytes.referencejs"
+)
 
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "test_bytes.reference",
-    srcs  = [
-        ":test_bytes.reference",
-        ":test_bytes.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :test_bytes.reference)`",
-        "`realpath $(location :test_bytes.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__binary.referencejs__",
+    tool  = ":binary.bc.js",
+    stdout  = "binary.referencejs"
 )
 

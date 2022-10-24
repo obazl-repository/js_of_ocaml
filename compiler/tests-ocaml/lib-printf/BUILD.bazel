@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -20,7 +23,7 @@ OPTS_1 = [
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "pr6534.exe.js",
+    name        = "pr6534.bc.js",
     entry_point = ":pr6534.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -37,17 +40,18 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Pr6534",
     struct        = "pr6534.ml",
-    opts          = ["-open", "Lib_printf_execlib"] + OPTS_1,
-    deps          = [":lib_printf_execlib"],
-    visibility    = ["//visibility:private"]
+    opts          = OPTS_1,
+    deps          =  [
+        ":Testing"
+    ],
 )
 
 #############
 js_binary(
-    name        = "pr6938.exe.js",
+    name        = "pr6938.bc.js",
     entry_point = ":pr6938.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -64,17 +68,18 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Pr6938",
     struct        = "pr6938.ml",
-    opts          = ["-open", "Lib_printf_execlib"] + OPTS_1,
-    deps          = [":lib_printf_execlib"],
-    visibility    = ["//visibility:private"]
+    opts          = OPTS_1,
+    deps          =  [
+        ":Testing"
+    ],
 )
 
 #############
 js_binary(
-    name        = "tprintf.exe.js",
+    name        = "tprintf.bc.js",
     entry_point = ":tprintf.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -91,90 +96,61 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Tprintf",
     struct        = "tprintf.ml",
-    opts          = ["-open", "Lib_printf_execlib"] + OPTS_1,
-    deps          = [":lib_printf_execlib"],
-    visibility    = ["//visibility:private"]
-)
-
-############################ Exec Libs ###############################
-ocaml_ns_library(
-    name = "lib_printf_execlib",
-    manifest = [
+    opts          = OPTS_1,
+    deps          =  [
         ":Testing"
     ],
-    visibility = ["//visibility:private"],
 )
 
 ######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Testing",
     struct        = "testing.ml",
     opts          = OPTS_1,
-    deps          =     visibility    = ["//visibility:private"]
 )
 
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "pr6534.reference",
-    srcs  = [
-        ":pr6534.reference",
-        ":pr6534.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :pr6534.reference)`",
-        "`realpath $(location :pr6534.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__pr6534.referencejs__",
+    tool  = ":pr6534.bc.js",
+    stdout  = "pr6534.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "pr6938.reference",
-    srcs  = [
-        ":pr6938.reference",
-        ":pr6938.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :pr6938.reference)`",
-        "`realpath $(location :pr6938.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "pr6534.reference.diff_test",
+    file1  = ":pr6534.reference",
+    file2  = ":pr6534.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "tprintf.reference",
-    srcs  = [
-        ":tprintf.reference",
-        ":tprintf.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :tprintf.reference)`",
-        "`realpath $(location :tprintf.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__pr6938.referencejs__",
+    tool  = ":pr6938.bc.js",
+    stdout  = "pr6938.referencejs"
+)
+
+##########
+diff_test(
+    name  = "pr6938.reference.diff_test",
+    file1  = ":pr6938.reference",
+    file2  = ":pr6938.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__tprintf.referencejs__",
+    tool  = ":tprintf.bc.js",
+    stdout  = "tprintf.referencejs"
+)
+
+##########
+diff_test(
+    name  = "tprintf.reference.diff_test",
+    file1  = ":tprintf.reference",
+    file2  = ":tprintf.referencejs"
 )
 

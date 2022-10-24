@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +17,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "test_atomic.exe.js",
+    name        = "test_atomic.bc.js",
     entry_point = ":test_atomic.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,12 +34,16 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Test_atomic",
     struct        = "test_atomic.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
+##############
+js_run_binary(
+    name  = "__tools__",
+    tool  = ":test_atomic.bc.js",
+    stdout  = "tools.stdout"
+)
 

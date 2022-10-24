@@ -6,9 +6,9 @@ grammar=1.0.0-BETA  ;; version number of config grammar, not obazl program
 
 [srcs]
 
-
-;; `echo $(PWD)` always included
-;; include = test
+;; include-only == -r flag
+;; emit-only == -p flag
+;; exclude == -x flag
 
 ;;;; excludes override includes
 ;; excluded by default:
@@ -16,6 +16,8 @@ grammar=1.0.0-BETA  ;; version number of config grammar, not obazl program
 ;; bazel-bin, bazel-out etc. - bazel symlinks
 ;; hidden files and dirs (.git/, .github/, .merlin, etc.)
 
+exclude = _opam ;; do not process local opam switch
+exclude = x_opam ;; do not process local opam switch
 exclude = bzl  ;; bazel code only
 
 exclude = api  ;; empty dunefile
@@ -45,13 +47,25 @@ exclude = tools/version  ;; hand-coded translation of tuareg dunefile
 ;; exclude  = compiler/tests-dynlink
 exclude = compiler/tests-io  ;; WIP, bad dunefile (unescaped '\' in string literal)
 ;; exclude = compiler/tests-jsoo
-exclude = compiler/tests-jsoo/bin  ;; WIP - unimplemented 'with-accepted-exit-codes' field
+;; exclude = compiler/tests-jsoo/bin  ;; WIP - unimplemented 'with-accepted-exit-codes' field
 
 ;; exclude = compiler/tests-num
 ;;; exclude = compiler/tests-ocaml
 ;; exclude = compiler/tests-re
 exclude = examples
-exclude = examples/boulderdash
+;; exclude = examples/boulderdash
+;; exclude = examples/cubes
+;; exclude = examples/graph_viewer
+;; exclude = examples/graphics
+;; exclude = examples/hyperbolic
+;; exclude = examples/minesweeper
+;; exclude = examples/namespace
+;; exclude = examples/planet
+;; exclude = examples/separate_compilation
+;; exclude = examples/test_wheel
+;; exclude = examples/webgl
+;; exclude = examples/wiki
+;; exclude = examples/wysiwyg
 
 ;; exclude = lib
 ;; exclude = lib/deriving_json

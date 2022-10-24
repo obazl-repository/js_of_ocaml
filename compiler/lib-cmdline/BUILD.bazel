@@ -1,12 +1,13 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
 )
 
 DEPS_1 = [
-    "@cmdliner//lib/cmdliner",
+    "@opam_cmdliner//lib/cmdliner",
     "//compiler/lib:js_of_ocaml_compiler"
 ]
 
@@ -14,7 +15,7 @@ DEPS_1 = [
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "jsoo_cmdline",
     ns         = "jsoo_cmdline",
     manifest = [
@@ -24,13 +25,13 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Arg",
     struct        = "arg.ml",
     sig           = "arg.mli",
     deps          = DEPS_1,
 )
-
 
 ocaml_module(
     name          = "Jsoo_cmdline",
@@ -39,6 +40,4 @@ ocaml_module(
         ":Arg"
     ],
 )
-
-
 

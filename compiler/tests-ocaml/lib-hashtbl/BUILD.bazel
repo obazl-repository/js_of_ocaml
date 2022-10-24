@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "hfun.exe.js",
+    name        = "hfun.bc.js",
     entry_point = ":hfun.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Hfun",
     struct        = "hfun.ml",
 )
 
 #############
 js_binary(
-    name        = "htbl.exe.js",
+    name        = "htbl.bc.js",
     entry_point = ":htbl.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,52 +60,37 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Htbl",
     struct        = "htbl.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "hfun.referencejs",
-    srcs  = [
-        ":hfun.referencejs",
-        ":hfun.reference"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :hfun.referencejs)`",
-        "`realpath $(location :hfun.reference)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__hfun.referencejs__",
+    tool  = ":hfun.bc.js",
+    stdout  = "hfun.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "htbl.reference",
-    srcs  = [
-        ":htbl.reference",
-        ":htbl.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :htbl.reference)`",
-        "`realpath $(location :htbl.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "hfun.referencejs.diff_test",
+    file1  = ":hfun.referencejs",
+    file2  = ":hfun.reference"
+)
+
+##############
+js_run_binary(
+    name  = "__htbl.referencejs__",
+    tool  = ":htbl.bc.js",
+    stdout  = "htbl.referencejs"
+)
+
+##########
+diff_test(
+    name  = "htbl.reference.diff_test",
+    file1  = ":htbl.reference",
+    file2  = ":htbl.referencejs"
 )
 

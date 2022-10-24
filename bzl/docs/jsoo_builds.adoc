@@ -1,0 +1,138 @@
+= Transpiling OCaml code with Jsoo
+
+
+== Modules
+
+1. Build the OCaml .cmo
+2. run jsoo in compile mode
+
+== Executables
+
+1. Build the OCaml .cmo
+2. run jsoo in link mode with deps:
+
+* a runtime js file
+* transpiled stdlib archive
+* list of transpiled cmo files
+* transpiled std_exit module
+
+
+
+
+=== how Dune does it
+
+In dev mode, it uses "separate" compilation.
+
+Not necessarily in this order:
+
+* Build the runtime:
++
+Example: `js_of_ocaml/compiler/tests-jsoo/bin`
++
+```
+$ (cd _build/default/compiler/tests-jsoo/bin \
+&& ../../../../install/default/bin/js_of_ocaml \
+build-runtime --pretty --source-map-inline \
+-o error1.bc.runtime.js)
+```
++
+Note that Dune builds a runtime like this for each executable it transpiles.
++
+* Transpile `stdlib.cma`
++
+```
+$ (cd _build/default/.js/stdlib && ../../../install/default/bin/js_of_ocaml --pretty --source-map-inline -o stdlib.cma.js /Users/gar/.opam/4.14.0/lib/ocaml/stdlib.cma)
+```
++
+* Transpile `std_exit.cmo`
++
+```
+$ (cd _build/default/.js/stdlib && ../../../install/default/bin/js_of_ocaml --pretty --source-map-inline -o std_exit.cmo.js /Users/gar/.opam/4.14.0/lib/ocaml/std_exit.cmo)
+```
++
+* Compile the OCaml resolver ("wrapper") module:
++
+```
+$ (cd _build/default \
+&& /Users/gar/.opam/4.14.0/bin/ocamlc.opt \
+-w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 \
+-strict-sequence -strict-formats -short-paths -keep-locs -w -49 \
+-nopervasives -nostdlib -g -bin-annot \
+-I compiler/tests-jsoo/bin/.error1.eobjs/byte \
+-no-alias-deps -opaque \
+-o compiler/tests-jsoo/bin/.error1.eobjs/byte/dune__exe.cmo \
+-c -impl compiler/tests-jsoo/bin/.error1.eobjs/dune__exe.ml-gen)
+```
++
+NOTE: `dune_exe.ml-gen` contains aliasing equations for the three executable modules in this directory:
++
+```
+(** @canonical Dune__exe.Error1 *)
+module Error1 = Dune__exe__Error1
+(** @canonical Dune__exe.Error2 *)
+module Error2 = Dune__exe__Error2
+(** @canonical Dune__exe.Error3 *)
+module Error3 = Dune__exe__Error3
+```
++
+* Compile the OCaml module  (as a submodule in the resolver module `Dune__exe`):
++
+```
+$ (cd _build/default/compiler/tests-jsoo/bin \
+&& ../../../../install/default/bin/js_of_ocaml \
+--pretty --source-map-inline \
+-o .error1.eobjs/byte/dune__exe__Error1.cmo.js \
+.error1.eobjs/byte/dune__exe__Error1.cmo)
+```
++
+* Transpile the resolver module and submodule:
++
+```
+$ (cd _build/default/compiler/tests-jsoo/bin \
+&& ../../../../install/default/bin/js_of_ocaml \
+--pretty --source-map-inline \
+-o .error1.eobjs/byte/dune__exe.cmo.js \
+.error1.eobjs/byte/dune__exe.cmo)
+```
++
+```
+$ (cd _build/default/compiler/tests-jsoo/bin \
+&& ../../../../install/default/bin/js_of_ocaml \
+--pretty --source-map-inline \
+-o .error1.eobjs/byte/dune__exe__Error1.cmo.js \
+.error1.eobjs/byte/dune__exe__Error1.cmo)
+```
++
+* Link it all:
+
+```
+$ (cd _build/default/compiler/tests-jsoo/bin \
+&& ../../../../install/default/bin/js_of_ocaml link \
+--source-map-inline \
+-o error1.bc.js \
+error1.bc.runtime.js \
+../../../.js/stdlib/stdlib.cma.js \
+.error1.eobjs/byte/dune__exe.cmo.js \
+.error1.eobjs/byte/dune__exe__Error1.cmo.js \
+../../../.js/stdlib/std_exit.cmo.js)
+```
+
+NOTE: In this case "wrapping" the executable module (`Error1`) in a
+resolver module (`Dune__exe`) is unnecessary; Dune presumably does
+this as a matter of course, to guard against inadvertent name
+collisions.
+
+=== how OBazl does it
+
+```
+(cd /private/var/tmp/_bazel_gar/72aaf4785e78fc0084e1189edd632bfe/execroot/js_of_ocaml_dev && \
+  exec env - \
+  bazel-out/darwin-opt-exec-2B5CBBC6/bin/compiler/bin-js_of_ocaml/js_of_ocaml.exe \
+    link \
+    -o \
+    bazel-out/darwin-dbg/bin/compiler/tests-jsoo/bin/error1.exe.out.js \
+    bazel-out/darwin-dbg/bin/runtime/jsoo_runtime.js \
+    bazel-out/darwin-dbg/bin/runtime/stdlib.cma.js \
+    bazel-out/darwin-dbg/bin/compiler/tests-jsoo/bin/error1.exe.js \
+    bazel-out/darwin-dbg/bin/runtime/std_exit.cmo.js)
+```

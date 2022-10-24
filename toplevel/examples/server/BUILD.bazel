@@ -2,15 +2,16 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
 )
 
 DEPS_1 = [
-    "@bytes//lib/bytes",
-    "@findlib//lib/findlib",
-    "@cohttp-lwt-unix//lib/cohttp-lwt-unix"
+    "@opam_bytes//lib/bytes",
+    "@opam_findlib//lib/findlib",
+    "@opam_cohttp-lwt-unix//lib/cohttp-lwt-unix"
 ]
 
 ##############################
@@ -21,13 +22,10 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Server",
     struct        = "server.ml",
     deps          = DEPS_1,
 )
 
 ######################## Modules & Signatures ########################
-
-
-

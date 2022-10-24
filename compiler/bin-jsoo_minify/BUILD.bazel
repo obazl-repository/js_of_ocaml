@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -10,7 +11,7 @@ load("@rules_ocaml//build:rules.bzl",
 DEPS_1 = [
     "//compiler/lib-cmdline:jsoo_cmdline",
     "//compiler/lib:js_of_ocaml_compiler",
-    "@cmdliner//lib/cmdliner",
+    "@opam_cmdliner//lib/cmdliner",
     "@ocaml//compiler-libs/common"
 ]
 
@@ -26,17 +27,18 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
+## this-is-main Jsoo_minify
 ocaml_exec_module(
     name          = "Jsoo_minify",
     struct        = "jsoo_minify.ml",
     sig           = "jsoo_minify.mli",
     opts          = ["-open", "Bin_jsoo_minify_execlib"] + OPTS_1,
-    deps          = [":bin_jsoo_minify_execlib"],
+    deps          = [":Bin_jsoo_minify_execlib"],
 )
 
 ############################ Exec Libs ###############################
 ocaml_ns_library(
-    name = "bin_jsoo_minify_execlib",
+    name = "Bin_jsoo_minify_execlib",
     manifest = [
         ":Cmd_arg"
     ],
@@ -44,15 +46,14 @@ ocaml_ns_library(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Cmd_arg",
     struct        = "cmd_arg.ml",
     sig           = "cmd_arg.mli",
-    opts          = OPTS_1,
+    opts          = OPTS_1, ## X0
     deps          = DEPS_1,
 )
-
-
 
 ############################# Rules ##################################
 

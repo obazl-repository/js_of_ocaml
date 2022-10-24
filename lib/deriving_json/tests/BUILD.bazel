@@ -1,21 +1,47 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
+     "ocaml_binary",
+     "ocaml_exec_module",
      "ocaml_ns_archive",
      "ocaml_module",
+     "ocaml_test",
      "ppx_executable",
+     "ppx_module",
+     "ppx_transform",
 )
+
+load("@obazl//build:rules_ocaml.bzl",
+     "ppxlib_executable", "ppx_expect_test")
+
+load("@rules_jsoo//build:rules.bzl",
+     ## "jsoo_binary",
+     "jsoo_link_binary", "jsoo_library", "jsoo_test_binary",
+     "jsoo_runtime")
+
+load("@aspect_rules_js//js:defs.bzl",
+     "js_binary", "js_run_binary", "js_library", "js_test")
 
 DEPS_1 = [
     "@ocaml//unix",
     "//lib/js_of_ocaml:js_of_ocaml",
-    "//lib/deriving_json:js_of_ocaml_deriving"
+    "//lib/deriving_json:js_of_ocaml_deriving",
+    # "@opam_ppx_inline_test//lib/runner/lib",
+    # "@opam_ppx_inline_test//lib/runtime-lib",
 ]
 
-#############################
-####  Aggregate Targets  ####
+################################
+## the modules/lib under test ##
 
-#################
+#############
+jsoo_library(
+    name = "deriving_expect_tests.cma.js",
+    srcs = [
+        ":deriving_expect_tests",
+    ]
+)
+
 ocaml_ns_archive(
     name       = "deriving_expect_tests",
     ns         = "deriving_expect_tests",
@@ -24,34 +50,159 @@ ocaml_ns_archive(
     ],
 )
 
-######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Json_convert",
-    struct        = "json_convert.ml",
-    deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    struct        = ":json_convert.pp",
+    deps          = DEPS_1
+    # ppx           = ":ppx_1.exe", #X1
+    # ppx_args      = ["-inline-test-lib", "DERIVING_EXPECT_TESTS", ],
+)
+
+ppx_transform(
+    name       = "json_convert.pp",
+    src        = "json_convert.ml",
+    # ppx        = ":ppxlib.exe",
+    ppx        = ":ppx_1.exe", #X1
+    args       = [
+        "-inline-test-lib", "DERIVING_EXPECT_TESTS",
+        # "-no-dump-ast" ## overrides 'print' attr
+    ],
+    # print      = "@rules_ocaml//ppx/print:binary!",
+    # print      = "@rules_ocaml//ppx/print:text!",
+    visibility = ["//visibility:public"],
+)
+
+#####################
+## the test runner ##
+
+##############
+js_run_binary(
+    name = "inline_test_runner.run.js",
+    tool = ":inline_test_runner.bcx.js",
+    stdout = "foo"
+)
+
+js_binary(
+    name = "inline_test_runner.bcx.js",
+    entry_point = ":inline_test_runner.bc.js",
+    # data = ["@opam_ppx_inline_test//lib/runner/lib:jsoo_runtime"],
+    # data = [":deriving_expect_tests.cma.js"],
+    visibility  = ["//visibility:public"],
+)
+
+## uses toolchain runtime
+## fixme: extract jsoo_runtimes from deps, then build runtime
+jsoo_link_binary(
+    name = "inline_test_runner.bc.js",
+    main = ":Inline_test_runner_main.js",
+    runtime = ":inline_test_runner_runtime",
+    deps = [
+        ":deriving_expect_tests.cma.js",
+    ],
+    # entry_point = ":Inline_test_runner_main.js",
+    # data = [":deriving_expect_tests.cma.js"],
+    visibility  = ["//visibility:public"],
+)
+
+jsoo_runtime(
+    name = "inline_test_runner_runtime",
+    action = "build",
+    outs = ["runtime.js"],
+    srcs = [
+        "@opam_base//lib/base_internalhash_types:jsoo_runtime",
+        "@opam_base//lib/base:jsoo_runtime",
+        "@opam_time_now//lib/time_now:jsoo_runtime",
+        "@opam_ppx_expect//lib/collector:jsoo_runtime",
+        "@opam_ppx_inline_test//lib/runner/lib:jsoo_runtime",
+
+        # ":Inline_test_runner_main.js",
+        # "@opam_ppx_inline_test//lib/runner/lib:jsoo_runtime",
+        # ":deriving_expect_tests.cma.js",
+    ],
+    visibility  = ["//visibility:public"],
 )
 
 
+
+################################################################
+ppx_expect_test( ## also jsoo_ppx_expect_test?
+    name = "ppx_expect_test.exe",
+    args = ["inline-test-runner", "DERIVING_EXPECT_TESTS"],
+    deps = [
+        ":deriving_expect_tests",
+    ]
+)
+## equivalent:
+ocaml_binary(
+    name = "inline_test_runner.exe",
+    main = ":Inline_test_runner_main",
+    opts = ["-linkall"], # for building
+    args = ["inline-test-runner", "DERIVING_EXPECT_TESTS"], # for running
+    deps = [
+        "@opam_ppx_expect//lib/evaluator",
+        ":deriving_expect_tests"
+    ],
+    # vm_runtime = "@rules_ocaml//cfg/runtime:static"
+)
+################################################################
+
+#############
+jsoo_library(
+    name = "Inline_test_runner_main.js",
+    srcs  = [":Inline_test_runner_main"]
+)
+
+# ppx_inline_test(
+# )
+ocaml_exec_module(
+    name       = "Inline_test_runner_main",
+    struct     = "inline_test_runner_main.ml",
+    opts = ["-linkall"],
+    deps       = ["@opam_ppx_inline_test//lib/runtime-lib"],
+    visibility = ["//visibility:public"],
+)
+
+genrule(
+    name = "__inline_test_runner_main__",
+    outs = ["inline_test_runner_main.ml"],
+    # NB: (name ppx_inline_test_lib)
+    #     (public_name ppx_inline_test.runtime-lib)
+    cmd = "\n".join([
+        "echo \"(* GENERATED FILE - DO NOT EDIT *)\" > \"$@\"",
+        "echo \"let () = Ppx_inline_test_lib.Runtime.exit ();;\" >> \"$@\""
+    ])
+)
 
 ###############
 ppx_executable(
     name    = "ppx_1.exe",
     main    = ":Ppx_driver",
     deps = [
-        "@ppx_expect//lib/ppx_expect",
+        "@opam_ppx_expect//lib/ppx_expect",
         "//ppx/ppx_deriving_json/lib:ppx_deriving_json"
     ],
-    ## @ppx_inline_test//lib/ppx_inline_test
+    ppx_codeps = [
+        "@opam_ppx_expect//lib/evaluator",
+    ],
+)
+
+ppxlib_executable(
+    name    = "ppxlib.exe",
+    deps = [
+        "@opam_ppx_expect//lib/ppx_expect",
+        "//ppx/ppx_deriving_json/lib:ppx_deriving_json"
+    ],
+    ppx_codeps = [
+        "@opam_ppx_expect//lib/evaluator",
+    ],
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########
@@ -63,4 +214,3 @@ genrule(
         "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
     ])
 )
-

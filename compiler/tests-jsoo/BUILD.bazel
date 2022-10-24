@@ -1,9 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
      "cc_selection_proxy",
 )
 
@@ -15,7 +17,7 @@ DEPS_1 = [
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "jsoo_testsuite",
     ns         = "jsoo_testsuite",
     manifest = [
@@ -34,77 +36,85 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Test_bigarray",
     struct        = "test_bigarray.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_channel",
     struct        = "test_channel.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_floats",
     struct        = "test_floats.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_fma",
     struct        = "test_fma.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_ints",
     struct        = "test_ints.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_io",
     struct        = "test_io.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_marshal",
     struct        = "test_marshal.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_obj",
     struct        = "test_obj.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_rec_mod",
     struct        = "test_rec_mod.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
 
 ocaml_module(
     name          = "Test_time",
     struct        = "test_time.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_TESTSUITE", ],
 )
-
 
 
 ###############
@@ -112,17 +122,17 @@ ppx_executable(
     name    = "ppx_1.exe",
     main    = ":Ppx_driver",
     deps = [
-        "@ppx_expect//lib/ppx_expect"
+        "@opam_ppx_expect//lib/ppx_expect"
     ],
-    ## @ppx_inline_test//lib/ppx_inline_test
+    ## @opam_ppx_inline_test//lib/ppx_inline_test
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########
@@ -140,8 +150,8 @@ genrule(
 cc_selection_proxy(
     name = "__libjsoo_testsuite__",
     selection = select({
-        "@ocaml//host/target:vm?": ["dlljsoo_testsuite.stubs.so"],
-        "@ocaml//host/target:sys?": ["jsoo_testsuite.stubs"],
+        "@ocaml//platforms:vm?": ["dlljsoo_testsuite.stubs.so"],
+        "@ocaml//platforms:sys?": ["jsoo_testsuite.stubs"],
         "//conditions:default": ["jsoo_testsuite.stubs"]    })
 )
 

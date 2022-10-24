@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "bigstring_access.exe.js",
+    name        = "bigstring_access.bc.js",
     entry_point = ":bigstring_access.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Bigstring_access",
     struct        = "bigstring_access.ml",
 )
 
 #############
 js_binary(
-    name        = "string_access.exe.js",
+    name        = "string_access.bc.js",
     entry_point = ":string_access.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,52 +60,37 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "String_access",
     struct        = "string_access.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "bigstring_access.reference",
-    srcs  = [
-        ":bigstring_access.reference",
-        ":bigstring_access.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :bigstring_access.reference)`",
-        "`realpath $(location :bigstring_access.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__bigstring_access.referencejs__",
+    tool  = ":bigstring_access.bc.js",
+    stdout  = "bigstring_access.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "string_access.reference",
-    srcs  = [
-        ":string_access.reference",
-        ":string_access.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :string_access.reference)`",
-        "`realpath $(location :string_access.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "bigstring_access.reference.diff_test",
+    file1  = ":bigstring_access.reference",
+    file2  = ":bigstring_access.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__string_access.referencejs__",
+    tool  = ":string_access.bc.js",
+    stdout  = "string_access.referencejs"
+)
+
+##########
+diff_test(
+    name  = "string_access.reference.diff_test",
+    file1  = ":string_access.reference",
+    file2  = ":string_access.referencejs"
 )
 

@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +17,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "floatarray.exe.js",
+    name        = "floatarray.bc.js",
     entry_point = ":floatarray.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,12 +34,16 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Floatarray",
     struct        = "floatarray.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
+##############
+js_run_binary(
+    name  = "__floatarray.referencejs__",
+    tool  = ":floatarray.bc.js",
+    stdout  = "floatarray.referencejs"
+)
 

@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -20,7 +23,7 @@ DEPS_1 = [
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "t01.exe.js",
+    name        = "t01.bc.js",
     entry_point = ":t01.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -37,34 +40,24 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "T01",
     struct        = "t01.ml",
     deps          = DEPS_1,
 )
 
 ######################## Modules & Signatures ########################
+##############
+js_run_binary(
+    name  = "__t01.referencejs__",
+    tool  = ":t01.bc.js",
+    stdout  = "t01.referencejs"
+)
 
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "t01.reference",
-    srcs  = [
-        ":t01.reference",
-        ":t01.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :t01.reference)`",
-        "`realpath $(location :t01.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "t01.reference.diff_test",
+    file1  = ":t01.reference",
+    file2  = ":t01.referencejs"
 )
 

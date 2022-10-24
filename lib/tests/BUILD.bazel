@@ -1,9 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
 )
 
 DEPS_1 = [
@@ -15,7 +17,7 @@ DEPS_1 = [
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "jsoo_lib_expect_tests",
     ns         = "jsoo_lib_expect_tests",
     manifest = [
@@ -35,91 +37,101 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
-
 ocaml_module(
     name          = "Test_css_angle",
     struct        = "test_css_angle.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_css_color",
     struct        = "test_css_color.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_css_length",
     struct        = "test_css_length.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_fun_call",
     struct        = "test_fun_call.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_json",
     struct        = "test_json.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_nodejs_filesystem_errors",
     struct        = "test_nodejs_filesystem_errors.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_poly_compare",
     struct        = "test_poly_compare.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_regexp",
     struct        = "test_regexp.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_sys",
     struct        = "test_sys.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_typed_array",
     struct        = "test_typed_array.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_unsafe_set_get",
     struct        = "test_unsafe_set_get.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
 
 ocaml_module(
     name          = "Test_url",
     struct        = "test_url.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
+    ppx_args      = ["-inline-test-lib", "JSOO_LIB_EXPECT_TESTS", ],
 )
-
 
 
 ###############
@@ -128,17 +140,17 @@ ppx_executable(
     main    = ":Ppx_driver",
     deps = [
         "//ppx/ppx_js/lib_internal:ppx_js_internal",
-        "@ppx_expect//lib/ppx_expect"
+        "@opam_ppx_expect//lib/ppx_expect"
     ],
-    ## @ppx_inline_test//lib/ppx_inline_test
+    ## @opam_ppx_inline_test//lib/ppx_inline_test
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########

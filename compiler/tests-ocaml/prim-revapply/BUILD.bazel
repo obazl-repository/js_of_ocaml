@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "apply.exe.js",
+    name        = "apply.bc.js",
     entry_point = ":apply.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Apply",
     struct        = "apply.ml",
 )
 
 #############
 js_binary(
-    name        = "revapply.exe.js",
+    name        = "revapply.bc.js",
     entry_point = ":revapply.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,52 +60,37 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Revapply",
     struct        = "revapply.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "apply.reference",
-    srcs  = [
-        ":apply.reference",
-        ":apply.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :apply.reference)`",
-        "`realpath $(location :apply.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__apply.referencejs__",
+    tool  = ":apply.bc.js",
+    stdout  = "apply.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "revapply.reference",
-    srcs  = [
-        ":revapply.reference",
-        ":revapply.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :revapply.reference)`",
-        "`realpath $(location :revapply.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "apply.reference.diff_test",
+    file1  = ":apply.reference",
+    file2  = ":apply.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__revapply.referencejs__",
+    tool  = ":revapply.bc.js",
+    stdout  = "revapply.referencejs"
+)
+
+##########
+diff_test(
+    name  = "revapply.reference.diff_test",
+    file1  = ":revapply.reference",
+    file2  = ":revapply.referencejs"
 )
 

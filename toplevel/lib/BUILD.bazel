@@ -1,15 +1,17 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
 )
 
 DEPS_1 = [
     "//compiler/lib:js_of_ocaml_compiler",
     "//lib/js_of_ocaml:js_of_ocaml",
-    "@bytes//lib/bytes",
+    "@opam_bytes//lib/bytes",
     "@ocaml//compiler-libs/bytecomp",
     "@ocaml//compiler-libs/toplevel"
 ]
@@ -18,7 +20,7 @@ DEPS_1 = [
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "js_of_ocaml_toplevel",
     ns         = "js_of_ocaml_toplevel",
     manifest = [
@@ -30,6 +32,7 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "JsooTop",
     struct        = "jsooTop.ml",
@@ -38,25 +41,26 @@ ocaml_module(
         ":JsooTopError",
         ":JsooTopPpx"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "JsooTopError",
     struct        = "jsooTopError.ml",
     sig           = "jsooTopError.mli",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "JsooTopPpx",
     struct        = "jsooTopPpx.ml",
     sig           = "jsooTopPpx.mli",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
-
 
 ocaml_module(
     name          = "Js_of_ocaml_toplevel",
@@ -64,9 +68,8 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":JsooTop"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
-
 
 
 ###############
@@ -80,11 +83,11 @@ ppx_executable(
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########

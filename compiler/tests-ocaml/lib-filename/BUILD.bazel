@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "suffix.exe.js",
+    name        = "suffix.bc.js",
     entry_point = ":suffix.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Suffix",
     struct        = "suffix.ml",
 )
 
 #############
 js_binary(
-    name        = "extension.exe.js",
+    name        = "extension.bc.js",
     entry_point = ":extension.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,52 +60,37 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Extension",
     struct        = "extension.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "suffix.reference",
-    srcs  = [
-        ":suffix.reference",
-        ":suffix.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :suffix.reference)`",
-        "`realpath $(location :suffix.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__suffix.referencejs__",
+    tool  = ":suffix.bc.js",
+    stdout  = "suffix.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "extension.reference",
-    srcs  = [
-        ":extension.reference",
-        ":extension.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :extension.reference)`",
-        "`realpath $(location :extension.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "suffix.reference.diff_test",
+    file1  = ":suffix.reference",
+    file2  = ":suffix.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__extension.referencejs__",
+    tool  = ":extension.bc.js",
+    stdout  = "extension.referencejs"
+)
+
+##########
+diff_test(
+    name  = "extension.reference.diff_test",
+    file1  = ":extension.reference",
+    file2  = ":extension.referencejs"
 )
 

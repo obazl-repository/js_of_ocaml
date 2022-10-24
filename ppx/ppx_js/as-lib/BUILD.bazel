@@ -6,11 +6,12 @@ load("@rules_ocaml//build:rules.bzl",
      "ocaml_library",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
 )
 
 DEPS_1 = [
     "@ocaml//compiler-libs/common",
-    "@ppxlib//lib/ppxlib"
+    "@opam_ppxlib//lib/ppxlib"
 ]
 
 #############################
@@ -26,6 +27,7 @@ ocaml_library(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Ppx_js",
     struct        = "ppx_js.ml",
@@ -33,17 +35,15 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Ppx_js_internal"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
-
 
 ocaml_module(
     name          = "Ppx_js_internal",
     struct        = "ppx_js_internal.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
-
 
 
 ###############
@@ -51,16 +51,16 @@ ppx_executable(
     name    = "ppx_1.exe",
     main    = ":Ppx_driver",
     deps = [
-        "@ppxlib//lib/metaquot"
+        "@opam_ppxlib//lib/metaquot"
     ],
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########
@@ -72,6 +72,7 @@ genrule(
         "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
     ])
 )
+
 ############################# Rules ##################################
 
 ######
@@ -80,4 +81,3 @@ copy_file(
     src  = "//ppx/ppx_js/lib_internal:ppx_js_internal.ml",
     out  = "ppx_js_internal.ml"
 )
-

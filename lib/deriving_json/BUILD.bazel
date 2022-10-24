@@ -7,7 +7,7 @@ load("@rules_ocaml//build:rules.bzl",
 )
 
 DEPS_1 = [
-    "@bytes//lib/bytes"
+    "@opam_bytes//lib/bytes"
 ]
 
 #############################
@@ -24,6 +24,7 @@ ocaml_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Deriving_Json",
     struct        = "deriving_Json.ml",
@@ -34,6 +35,7 @@ ocaml_module(
     ],
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Deriving_Json_lexer",
     struct        = "deriving_Json_lexer.ml",
@@ -43,13 +45,11 @@ ocaml_module(
     ],
 )
 
-
 ocaml_module(
     name          = "Deriving_Json_import",
     struct        = "deriving_Json_import.ml",
     deps          = DEPS_1,
 )
-
 
 ########################
 ####  File Generators  ####
@@ -60,4 +60,3 @@ ocamllex(
     src   = "deriving_Json_lexer.mll",
     out   = "deriving_Json_lexer.ml",
 )
-

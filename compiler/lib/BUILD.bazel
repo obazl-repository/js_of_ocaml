@@ -3,10 +3,12 @@ package(default_visibility = ["//visibility:public"])
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocamllex",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
 )
 
 load("@obazl//build:rules_ocaml.bzl", "menhir")
@@ -14,8 +16,8 @@ load("@obazl//build:rules_ocaml.bzl", "menhir")
 DEPS_1 = [
     "@ocaml//compiler-libs/common",
     "@ocaml//compiler-libs/bytecomp",
-    "@bytes//lib/bytes",
-    "@menhirLib//lib/menhirLib"
+    "@opam_bytes//lib/bytes",
+    "@opam_menhirLib//lib/menhirLib"
 ]
 
 OPTS_1 = [
@@ -28,7 +30,7 @@ OPTS_1 = [
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "js_of_ocaml_compiler",
     ns         = "js_of_ocaml_compiler",
     manifest = [
@@ -94,6 +96,7 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Annot_lexer",
     struct        = "annot_lexer.ml",
@@ -102,9 +105,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Annot_parser"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Annot_parser",
     struct        = "annot_parser.ml",
@@ -113,9 +117,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Primitive"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Base64",
     struct        = "base64.ml",
@@ -124,9 +129,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Build_path_prefix_map",
     struct        = "build_path_prefix_map.ml",
@@ -135,9 +141,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Builtins",
     struct        = "builtins.ml",
@@ -146,9 +153,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Code",
     struct        = "code.ml",
@@ -160,18 +168,20 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Compiler_version",
     struct        = "compiler_version.ml",
     sig           = "compiler_version.mli",
     opts          = OPTS_1,
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Config",
     struct        = "config.ml",
@@ -180,9 +190,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Deadcode",
     struct        = "deadcode.ml",
@@ -196,9 +207,10 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Debug",
     struct        = "debug.ml",
@@ -207,9 +219,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Dgraph",
     struct        = "dgraph.ml",
@@ -218,9 +231,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Driver",
     struct        = "driver.ml",
@@ -258,9 +272,10 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Eval",
     struct        = "eval.ml",
@@ -273,9 +288,10 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Findlib",
     struct        = "findlib.ml",
@@ -285,9 +301,10 @@ ocaml_module(
         ":Fs",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Flow",
     struct        = "flow.ml",
@@ -303,9 +320,10 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Freevars",
     struct        = "freevars.ml",
@@ -317,9 +335,10 @@ ocaml_module(
         ":Code",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Fs",
     struct        = "fs.ml",
@@ -328,9 +347,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Generate",
     struct        = "generate.ml",
@@ -352,9 +372,10 @@ ocaml_module(
         ":Javascript",
         ":Parse_bytecode"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Generate_closure",
     struct        = "generate_closure.ml",
@@ -369,9 +390,10 @@ ocaml_module(
         ":Subst",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Inline",
     struct        = "inline.ml",
@@ -385,9 +407,10 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Instr",
     struct        = "instr.ml",
@@ -397,9 +420,10 @@ ocaml_module(
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Javascript",
     struct        = "javascript.ml",
@@ -413,9 +437,10 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_assign",
     struct        = "js_assign.ml",
@@ -430,9 +455,10 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_lexer",
     struct        = "js_lexer.ml",
@@ -442,9 +468,10 @@ ocaml_module(
         ":Stdlib",
         ":Js_token"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_output",
     struct        = "js_output.ml",
@@ -464,9 +491,10 @@ ocaml_module(
         ":Pretty_print",
         ":Source_map"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_parser",
     struct        = "js_parser.ml",
@@ -477,9 +505,10 @@ ocaml_module(
         ":Javascript",
         ":Js_token"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_simpl",
     struct        = "js_simpl.ml",
@@ -490,9 +519,10 @@ ocaml_module(
         ":Code",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_token",
     struct        = "js_token.ml",
@@ -502,9 +532,10 @@ ocaml_module(
         ":Stdlib",
         ":Primitive"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Js_traverse",
     struct        = "js_traverse.ml",
@@ -516,9 +547,10 @@ ocaml_module(
         ":Javascript",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Link_js",
     struct        = "link_js.ml",
@@ -530,9 +562,10 @@ ocaml_module(
         ":Stdlib",
         ":Source_map"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Linker",
     struct        = "linker.ml",
@@ -555,9 +588,10 @@ ocaml_module(
         ":Stdlib",
         ":Target_env"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Macro",
     struct        = "macro.ml",
@@ -569,9 +603,10 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Magic_number",
     struct        = "magic_number.ml",
@@ -581,9 +616,10 @@ ocaml_module(
         ":Ocaml_version",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Mlvalue",
     struct        = "mlvalue.ml",
@@ -593,9 +629,10 @@ ocaml_module(
         ":Stdlib",
         ":Javascript"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Ocaml_compiler",
     struct        = "ocaml_compiler.ml",
@@ -605,9 +642,10 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Ocaml_version",
     struct        = "ocaml_version.ml",
@@ -616,9 +654,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Parse_bytecode",
     struct        = "parse_bytecode.ml",
@@ -638,9 +677,10 @@ ocaml_module(
         ":Parse_info",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Parse_info",
     struct        = "parse_info.ml",
@@ -649,9 +689,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Parse_js",
     struct        = "parse_js.ml",
@@ -667,9 +708,10 @@ ocaml_module(
         ":Js_token",
         ":Parse_info"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Phisimpl",
     struct        = "phisimpl.ml",
@@ -683,9 +725,10 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Pretty_print",
     struct        = "pretty_print.ml",
@@ -694,9 +737,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Primitive",
     struct        = "primitive.ml",
@@ -705,9 +749,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Pseudo_fs",
     struct        = "pseudo_fs.ml",
@@ -719,9 +764,10 @@ ocaml_module(
         ":Code",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Pure_fun",
     struct        = "pure_fun.ml",
@@ -732,9 +778,10 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Reserved",
     struct        = "reserved.ml",
@@ -743,9 +790,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Source_map",
     struct        = "source_map.ml",
@@ -755,9 +803,10 @@ ocaml_module(
         ":Stdlib",
         ":Vlq64"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Source_map_io",
     struct        = select({
@@ -769,12 +818,13 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Source_map"
     ] +  select({
-        "//bzl/import:yojson?": ["@yojson//lib/yojson"],
+        "//bzl/import:yojson?": ["@opam_yojson//lib/yojson"],
         "//conditions:default": []
     }),  ## 
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Specialize",
     struct        = "specialize.ml",
@@ -787,9 +837,10 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Specialize_js",
     struct        = "specialize_js.ml",
@@ -802,9 +853,10 @@ ocaml_module(
         ":Code",
         ":Flow"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Strongly_connected_components",
     struct        = "strongly_connected_components.ml",
@@ -813,9 +865,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Subst",
     struct        = "subst.ml",
@@ -825,9 +878,10 @@ ocaml_module(
         ":Stdlib",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Tailcall",
     struct        = "tailcall.ml",
@@ -840,9 +894,10 @@ ocaml_module(
         ":Timer",
         ":Code"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Target_env",
     struct        = "target_env.ml",
@@ -851,9 +906,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Timer",
     struct        = "timer.ml",
@@ -862,9 +918,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Var_printer",
     struct        = "var_printer.ml",
@@ -874,9 +931,10 @@ ocaml_module(
         ":Reserved",
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Vlq64",
     struct        = "vlq64.ml",
@@ -885,9 +943,8 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
-
 
 ocaml_module(
     name          = "Constant",
@@ -896,7 +953,7 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Stdlib"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
 
 ocaml_module(
@@ -904,9 +961,8 @@ ocaml_module(
     struct        = "stdlib.ml",
     opts          = OPTS_1,
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
-
 
 ########################
 ####  File Generators  ####
@@ -970,11 +1026,11 @@ ppx_executable(
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########
@@ -986,6 +1042,7 @@ genrule(
         "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
     ])
 )
+
 ############################# Rules ##################################
 
 ######
@@ -994,4 +1051,3 @@ copy_file(
     src  = "//:version.ml.in",
     out  = "compiler_version.ml"
 )
-

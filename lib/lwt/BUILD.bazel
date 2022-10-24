@@ -1,21 +1,23 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
 )
 
 DEPS_1 = [
     "//lib/js_of_ocaml:js_of_ocaml",
-    "@lwt//lib/lwt"
+    "@opam_lwt//lib/lwt"
 ]
 
 #############################
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "js_of_ocaml_lwt",
     ns         = "js_of_ocaml_lwt",
     manifest = [
@@ -30,6 +32,7 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Lwt_file",
     struct        = "lwt_file.ml",
@@ -37,9 +40,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Lwt_js",
     struct        = "lwt_js.ml",
@@ -47,9 +51,10 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Lwt_js_events",
     struct        = "lwt_js_events.ml",
@@ -58,9 +63,10 @@ ocaml_module(
         ":Import",
         ":Lwt_js"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Lwt_jsonp",
     struct        = "lwt_jsonp.ml",
@@ -69,9 +75,10 @@ ocaml_module(
         ":Import",
         ":Lwt_js"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
 
+## this-is-main #f
 ocaml_module(
     name          = "Lwt_xmlHttpRequest",
     struct        = "lwt_xmlHttpRequest.ml",
@@ -79,15 +86,14 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
-
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
 
 ocaml_module(
@@ -100,9 +106,8 @@ ocaml_module(
         ":Lwt_jsonp",
         ":Lwt_xmlHttpRequest"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
-
 
 
 ###############
@@ -115,11 +120,11 @@ ppx_executable(
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########

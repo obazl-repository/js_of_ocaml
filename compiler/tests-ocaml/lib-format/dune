@@ -1,9 +1,18 @@
 (executables
  (names pr6824 print_if_newline pp_print_custom_break print_seq tformat)
+ ;; (modules :standard \ foo)
  (libraries)
  (flags
   (:standard \ -strict-formats))
  (modes js))
+
+;; (executables
+;;  (names foo)
+;;  (modules :standard \ pr6824)
+;;  (libraries)
+;;  (flags
+;;   (:standard \ -strict-formats))
+;;  (modes js))
 
 (rule
  (target pr6824.referencejs)

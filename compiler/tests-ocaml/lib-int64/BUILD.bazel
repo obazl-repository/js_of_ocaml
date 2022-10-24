@@ -1,7 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
 load("@rules_ocaml//build:rules.bzl",
      "ocaml_binary",
+     "ocaml_library",
      "ocaml_ns_library",
      "ocaml_exec_module",
      "ocaml_module",
@@ -16,7 +19,7 @@ load("@aspect_rules_js//js:defs.bzl",
 ####  Executable Targets  ####
 #############
 js_binary(
-    name        = "test.exe.js",
+    name        = "test.bc.js",
     entry_point = ":test.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -33,14 +36,14 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Test",
     struct        = "test.ml",
 )
 
 #############
 js_binary(
-    name        = "issue9460.exe.js",
+    name        = "issue9460.bc.js",
     entry_point = ":issue9460.exe.jsoo",
     visibility  = ["//visibility:public"],
 )
@@ -57,52 +60,37 @@ ocaml_binary(
     visibility = ["//visibility:public"],
 )
 
-ocaml_module(
+ocaml_exec_module(
     name          = "Issue9460",
     struct        = "issue9460.ml",
 )
 
 ######################## Modules & Signatures ########################
-
-
-############################# Rules ##################################
-
-########
-genrule(
-    outs  = [
-
-    ],
-    name  = "test.reference",
-    srcs  = [
-        ":test.reference",
-        ":test.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :test.reference)`",
-        "`realpath $(location :test.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##############
+js_run_binary(
+    name  = "__test.referencejs__",
+    tool  = ":test.bc.js",
+    stdout  = "test.referencejs"
 )
-########
-genrule(
-    outs  = [
 
-    ],
-    name  = "issue9460.reference",
-    srcs  = [
-        ":issue9460.reference",
-        ":issue9460.referencejs"
-    ],
-    cmd   = " ".join([
-        "$(execpath diff)",
-        "`realpath $(location :issue9460.reference)`",
-        "`realpath $(location :issue9460.referencejs)`",
-    ]),
-    exec_tools = [
-        "diff"
-    ]
+##########
+diff_test(
+    name  = "test.reference.diff_test",
+    file1  = ":test.reference",
+    file2  = ":test.referencejs"
+)
+
+##############
+js_run_binary(
+    name  = "__issue9460.referencejs__",
+    tool  = ":issue9460.bc.js",
+    stdout  = "issue9460.referencejs"
+)
+
+##########
+diff_test(
+    name  = "issue9460.reference.diff_test",
+    file1  = ":issue9460.reference",
+    file2  = ":issue9460.referencejs"
 )
 

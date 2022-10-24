@@ -1,24 +1,26 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@rules_ocaml//build:rules.bzl",
+     "ocaml_archive",
      "ocaml_ns_archive",
      "ocaml_module",
      "ppx_executable",
+     "ppx_module",
      "cc_selection_proxy",
 )
 
 DEPS_1 = [
     "//lib/js_of_ocaml:js_of_ocaml",
     "//lib/lwt:js_of_ocaml_lwt",
-    "@lwt//lib/lwt",
-    "@graphics//lib/graphics"
+    "@opam_lwt//lib/lwt",
+    "@opam_graphics//lib/graphics"
 ]
 
 #############################
 ####  Aggregate Targets  ####
 
 #################
-ocaml_ns_archive(
+ocaml_ns_archive(  ##
     name       = "graphics_js",
     ns         = "graphics_js",
     manifest = [
@@ -29,6 +31,7 @@ ocaml_ns_archive(
 )
 
 ######################## Modules & Signatures ########################
+## this-is-main #f
 ocaml_module(
     name          = "Graphics_js",
     struct        = "graphics_js.ml",
@@ -36,17 +39,15 @@ ocaml_module(
     deps          = DEPS_1 + [
         ":Import"
     ],
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X2
 )
-
 
 ocaml_module(
     name          = "Import",
     struct        = "import.ml",
     deps          = DEPS_1,
-    ppx           = ":ppx_1.exe",
+    ppx           = ":ppx_1.exe", #X1
 )
-
 
 
 ###############
@@ -59,11 +60,11 @@ ppx_executable(
 )
 
 #############
-ocaml_module(
+ppx_module(
     name       = "Ppx_driver",
     struct     = ":ppx_driver.ml",
     visibility = ["//visibility:public"],
-    deps       = ["@ppxlib//lib/ppxlib"],
+    deps       = ["@opam_ppxlib//lib/ppxlib"],
 )
 
 ########
@@ -75,6 +76,7 @@ genrule(
         "echo \"let () = Ppxlib.Driver.standalone ()\" >> \"$@\"",
     ])
 )
+
 ############################# Rules ##################################
 
 ########
@@ -96,20 +98,20 @@ genrule(
     ]
 )
 
+##########
 filegroup(
     name = "glob_STAR.ml",
     srcs = glob(["*.ml"]),
     visibility = ["//visibility:public"]
 )
 
-
 ## cc: ((:name . graphics_js) (:srcs graphics_js_stubs))
 ################ ################
 cc_selection_proxy(
     name = "__libgraphics_js__",
     selection = select({
-        "@ocaml//host/target:vm?": ["dllgraphics_js.stubs.so"],
-        "@ocaml//host/target:sys?": ["graphics_js.stubs"],
+        "@ocaml//platforms:vm?": ["dllgraphics_js.stubs.so"],
+        "@ocaml//platforms:sys?": ["graphics_js.stubs"],
         "//conditions:default": ["graphics_js.stubs"]    })
 )
 
